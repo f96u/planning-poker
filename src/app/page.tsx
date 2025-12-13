@@ -14,7 +14,7 @@ export default function Home() {
     });
 
     const roomId = newRoomRef.key;
-    router.push(`/rooms/${roomId}`);
+    router.push(`/room/${roomId}`);
   }
 
   return (
