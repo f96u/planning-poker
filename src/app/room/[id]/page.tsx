@@ -69,49 +69,158 @@ export default function RoomPage() {
     });
   }
 
+  const revealCards = () => {
+    if (!roomId) return;
+    update(ref(db, `rooms/${roomId}`), {
+      status: 'revealed',
+    });
+  }
+
+  const resetTable = () => {
+    if (!roomId || !roomData || !roomData.users) return;
+
+    // 一括更新用のオブジェクトを作成
+    const updates: any = {};
+    
+    // 1. ルームのステータスを戻す
+    updates[`rooms/${roomId}/status`] = 'voting';
+
+    // 2. 全ユーザーの vote を null にする
+    Object.keys(roomData.users).forEach((uid) => {
+      updates[`rooms/${roomId}/users/${uid}/vote`] = null;
+    });
+
+    // DBを一括更新
+    update(ref(db), updates);
+  };
+
+  const usersList = Object.entries(roomData?.users || {})
+  const revealed = roomData?.status === 'revealed';
+
+  const validVotes = usersList
+    .map(([_, user]) => user.vote)
+    .filter(vote => typeof vote === 'number') as number[];
+  const average = validVotes.length > 0
+    ? (validVotes.reduce((sum, vote) => sum + vote, 0) / validVotes.length).toFixed(1)
+    : null;
+
   return (
     <div className="min-h-screen bg-gray-100 p-8">
       {roomData ? 
         <>
-          <h1 className="text-2xl font-bold mb-4">Room: {roomId}</h1>
+          {/* ヘッダー & 管理パネル */}
+          <header className="bg-white shadow p-4 flex flex-col sm:flex-row justify-between items-center sticky top-0 z-10">
+            <div>
+              <h1 className="text-xl font-bold text-gray-700 flex items-center gap-2">
+                🃏 Room: <span className="font-mono bg-gray-100 px-2 rounded text-sm">{roomId}</span>
+              </h1>
+            </div>
+            
+            {/* アクションボタン */}
+            <div className="flex gap-3 mt-4 sm:mt-0">
+              {!revealed ? (
+                <button 
+                  onClick={revealCards}
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-full shadow transition-all active:scale-95"
+                >
+                  結果を見る (Open)
+                </button>
+              ) : (
+                <button 
+                  onClick={resetTable}
+                  className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded-full shadow transition-all active:scale-95 flex items-center gap-2"
+                >
+                  🔄 次のゲームへ (Reset)
+                </button>
+              )}
+            </div>
+          </header>
       
-          {/* --- 場（テーブル）エリア --- */}
-          <div className="bg-white p-6 rounded-lg shadow mb-8">
-            <h2 className="text-xl mb-4 font-bold text-gray-700">参加メンバー</h2>
-            <div className="flex flex-wrap gap-4">
-              {Object.entries(roomData.users || {}).map(([uid, user]) => (
-                <div key={uid} className={`p-4 rounded border-2 w-32 text-center ${user.vote ? 'border-green-500 bg-green-50' : 'border-gray-200'}`}>
-                  <p className="font-bold truncate">{user.name}</p>
-                  <div className="mt-2 text-2xl font-bold h-10 flex items-center justify-center">
-                    {/* 開示済みなら数字、投票済みならチェック、未投票なら... */}
-                    {roomData.status === 'revealed' 
-                      ? user.vote 
-                      : (user.vote ? '✅' : 'thinking...')}
+          <main className="max-w-5xl mx-auto p-4 sm:p-8">
+            {/* ステータス表示 */}
+            <div className="text-center mb-8">
+              {revealed ? (
+                <div className="animate-fade-in-up">
+                  <p className="text-sm text-gray-500 uppercase tracking-widest font-bold mb-1">Result</p>
+                  <div className="text-4xl font-extrabold text-indigo-600">
+                    平均: {average ?? '-'}
                   </div>
                 </div>
-              ))}
+              ) : (
+                <div className="text-gray-400 font-medium flex items-center justify-center gap-2">
+                  <span className="relative flex h-3 w-3">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                  </span>
+                  投票受付中...
+                </div>
+              )}
             </div>
-          </div>
 
-          {/* --- 手札（投票）エリア --- */}
-          <div className="fixed bottom-0 left-0 right-0 bg-white p-6 shadow-up border-t">
-            <div className="max-w-4xl mx-auto">
-              <p className="mb-2 text-gray-500">カードを選んでください:</p>
-              <div className="flex gap-2 overflow-x-auto pb-2">
-                {CARDS.map((card) => (
-                  <button
-                    key={card}
-                    onClick={() => handleVote(card)}
+            {/* メンバーリスト（テーブル） */}
+            <div className="flex flex-wrap justify-center gap-6 mb-12">
+              {usersList.map(([uid, user]) => {
+                const hasVoted = user.vote !== undefined && user.vote !== null;
+                return (
+                  <div 
+                    key={uid} 
                     className={`
-                      flex-shrink-0 w-16 h-24 rounded border-2 font-bold text-xl transition-all
-                      ${userId &&roomData.users?.[userId]?.vote === card 
-                        ? 'bg-blue-500 text-white border-blue-600 -translate-y-4' 
-                        : 'bg-white hover:bg-gray-50 border-gray-300'}
+                      relative w-28 h-40 rounded-xl shadow-md flex flex-col items-center justify-center transition-all duration-300
+                      ${hasVoted ? 'bg-white -translate-y-1' : 'bg-gray-100'}
+                      ${revealed && user.vote === '?' ? 'border-2 border-yellow-400' : ''}
+                      ${!user.online ? 'opacity-40 grayscale' : ''}
                     `}
                   >
-                    {card}
-                  </button>
-                ))}
+                    {/* カードの中身 */}
+                    <div className={`
+                      text-4xl font-bold mb-2
+                      ${revealed ? 'text-gray-800' : 'text-transparent'}
+                      ${!revealed && hasVoted ? 'text-green-500' : ''}
+                    `}>
+                      {revealed 
+                        ? user.vote ?? '-' 
+                        : (hasVoted ? '✔' : '')}
+                    </div>
+
+                    {/* 名前 */}
+                    <div className="absolute bottom-3 w-full text-center px-2">
+                      <p className="text-xs font-bold text-gray-500 truncate">{user.name}</p>
+                    </div>
+                    
+                    {/* 投票済みバッジ（未開示時のみ） */}
+                    {!revealed && hasVoted && (
+                      <div className="absolute top-2 right-2 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </main>
+
+          {/* 自分の手札（投票エリア） */}
+          <div className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md p-4 shadow-[0_-5px_20px_rgba(0,0,0,0.1)] border-t border-gray-200">
+            <div className="max-w-3xl mx-auto">
+              <div className="flex gap-3 overflow-x-auto pb-2 justify-start sm:justify-center px-2">
+                {CARDS.map((card) => {
+                  const isSelected = userId && roomData.users?.[userId]?.vote === card;
+                  return (
+                    <button
+                      key={card}
+                      onClick={() => handleVote(card)}
+                      disabled={revealed} // 開示後は投票禁止
+                      className={`
+                        flex-shrink-0 w-12 h-16 sm:w-16 sm:h-24 rounded-lg font-bold text-xl sm:text-2xl transition-all duration-200
+                        border-2 shadow-sm
+                        ${isSelected 
+                          ? 'bg-indigo-600 text-white border-indigo-600 -translate-y-3 shadow-indigo-200' 
+                          : 'bg-white text-gray-600 border-gray-200 hover:border-indigo-300 hover:bg-indigo-50'}
+                        ${revealed ? 'opacity-50 cursor-not-allowed' : ''}
+                      `}
+                    >
+                      {card}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </div>
