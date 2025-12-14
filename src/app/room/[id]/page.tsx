@@ -97,137 +97,175 @@ export default function RoomPage() {
   const revealed = roomData?.status === 'revealed';
 
   const validVotes = usersList
-    .map(([_, user]) => user.vote)
+    .map(([, user]) => user.vote)
     .filter(vote => typeof vote === 'number') as number[];
   const average = validVotes.length > 0
     ? (validVotes.reduce((sum, vote) => sum + vote, 0) / validVotes.length).toFixed(1)
     : null;
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
       {roomData ? 
         <>
           {/* ヘッダー & 管理パネル */}
-          <header className="bg-white shadow p-4 flex flex-col sm:flex-row justify-between items-center sticky top-0 z-10">
-            <div>
-              <h1 className="text-xl font-bold text-gray-700 flex items-center gap-2">
-                🃏 Room: <span className="font-mono bg-gray-100 px-2 rounded text-sm">{roomId}</span>
-              </h1>
-            </div>
-            
-            {/* アクションボタン */}
-            <div className="flex gap-3 mt-4 sm:mt-0">
-              {!revealed ? (
-                <button 
-                  onClick={revealCards}
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-full shadow transition-all active:scale-95"
-                >
-                  結果を見る (Open)
-                </button>
-              ) : (
-                <button 
-                  onClick={resetTable}
-                  className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded-full shadow transition-all active:scale-95 flex items-center gap-2"
-                >
-                  🔄 次のゲームへ (Reset)
-                </button>
-              )}
+          <header className="bg-white/80 backdrop-blur-md shadow-lg sticky top-0 z-20 border-b border-gray-200">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex flex-col sm:flex-row justify-between items-center py-4 gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="inline-flex items-center justify-center w-10 h-10 bg-indigo-100 rounded-full">
+                    <span className="text-2xl">🃏</span>
+                  </div>
+                  <div>
+                    <h1 className="text-lg font-bold text-gray-800">Planning Poker</h1>
+                    <p className="text-xs text-gray-500 font-mono">Room: {roomId}</p>
+                  </div>
+                </div>
+                
+                {/* アクションボタン */}
+                <div className="flex gap-3">
+                  {!revealed ? (
+                    <button 
+                      onClick={revealCards}
+                      className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-6 rounded-full shadow-lg transition-all duration-200 transform hover:scale-105 active:scale-95 flex items-center gap-2"
+                    >
+                      <span>👁️</span>
+                      <span>結果を見る</span>
+                    </button>
+                  ) : (
+                    <button 
+                      onClick={resetTable}
+                      className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2.5 px-6 rounded-full shadow-lg transition-all duration-200 transform hover:scale-105 active:scale-95 flex items-center gap-2"
+                    >
+                      <span>🔄</span>
+                      <span>次のゲームへ</span>
+                    </button>
+                  )}
+                </div>
+              </div>
             </div>
           </header>
       
-          <main className="max-w-5xl mx-auto p-4 sm:p-8">
+          <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-32">
             {/* ステータス表示 */}
-            <div className="text-center mb-8">
+            <div className="text-center mb-10">
               {revealed ? (
-                <div className="animate-fade-in-up">
-                  <p className="text-sm text-gray-500 uppercase tracking-widest font-bold mb-1">Result</p>
-                  <div className="text-4xl font-extrabold text-indigo-600">
-                    平均: {average ?? '-'}
+                <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 max-w-md mx-auto">
+                  <p className="text-sm text-gray-500 uppercase tracking-widest font-bold mb-2">結果</p>
+                  <div className="text-5xl font-extrabold text-indigo-600 mb-2">
+                    {average ?? '-'}
                   </div>
+                  <p className="text-sm text-gray-400">平均値</p>
                 </div>
               ) : (
-                <div className="text-gray-400 font-medium flex items-center justify-center gap-2">
-                  <span className="relative flex h-3 w-3">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-                  </span>
-                  投票受付中...
+                <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-6 max-w-md mx-auto">
+                  <div className="flex items-center justify-center gap-3">
+                    <span className="relative flex h-4 w-4">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-4 w-4 bg-green-500"></span>
+                    </span>
+                    <p className="text-gray-600 font-semibold">投票受付中...</p>
+                  </div>
+                  <p className="text-xs text-gray-400 mt-2">
+                    {usersList.filter(([, u]) => u.vote !== null && u.vote !== undefined).length} / {usersList.length} 人が投票済み
+                  </p>
                 </div>
               )}
             </div>
 
             {/* メンバーリスト（テーブル） */}
-            <div className="flex flex-wrap justify-center gap-6 mb-12">
-              {usersList.map(([uid, user]) => {
-                const hasVoted = user.vote !== undefined && user.vote !== null;
-                return (
-                  <div 
-                    key={uid} 
-                    className={`
-                      relative w-28 h-40 rounded-xl shadow-md flex flex-col items-center justify-center transition-all duration-300
-                      ${hasVoted ? 'bg-white -translate-y-1' : 'bg-gray-100'}
-                      ${revealed && user.vote === '?' ? 'border-2 border-yellow-400' : ''}
-                      ${!user.online ? 'opacity-40 grayscale' : ''}
-                    `}
-                  >
-                    {/* カードの中身 */}
-                    <div className={`
-                      text-4xl font-bold mb-2
-                      ${revealed ? 'text-gray-800' : 'text-transparent'}
-                      ${!revealed && hasVoted ? 'text-green-500' : ''}
-                    `}>
-                      {revealed 
-                        ? user.vote ?? '-' 
-                        : (hasVoted ? '✔' : '')}
-                    </div>
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 sm:p-8 mb-8">
+              <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                <span>👥</span>
+                <span>参加メンバー</span>
+                <span className="text-sm font-normal text-gray-500 ml-auto">
+                  ({usersList.length}人)
+                </span>
+              </h2>
+              <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
+                {usersList.map(([uid, user]) => {
+                  const hasVoted = user.vote !== undefined && user.vote !== null;
+                  return (
+                    <div 
+                      key={uid} 
+                      className={`
+                        relative w-28 h-40 sm:w-32 sm:h-44 rounded-xl shadow-lg flex flex-col items-center justify-center transition-all duration-300
+                        ${hasVoted ? 'bg-gradient-to-br from-indigo-50 to-purple-50 -translate-y-2 shadow-xl border-2 border-indigo-200' : 'bg-gray-50 border-2 border-gray-200'}
+                        ${revealed && user.vote === '?' ? 'border-yellow-400 bg-yellow-50' : ''}
+                        ${!user.online ? 'opacity-40 grayscale' : ''}
+                      `}
+                    >
+                      {/* カードの中身 */}
+                      <div className={`
+                        text-5xl font-bold mb-3 transition-all duration-300
+                        ${revealed ? 'text-gray-800' : 'text-transparent'}
+                        ${!revealed && hasVoted ? 'text-green-500' : ''}
+                      `}>
+                        {revealed 
+                          ? user.vote ?? '-' 
+                          : (hasVoted ? '✓' : '')}
+                      </div>
 
-                    {/* 名前 */}
-                    <div className="absolute bottom-3 w-full text-center px-2">
-                      <p className="text-xs font-bold text-gray-500 truncate">{user.name}</p>
+                      {/* 名前 */}
+                      <div className="absolute bottom-4 w-full text-center px-2">
+                        <p className="text-sm font-bold text-gray-700 truncate">{user.name}</p>
+                        {!user.online && (
+                          <p className="text-xs text-gray-400 mt-1">オフライン</p>
+                        )}
+                      </div>
+                      
+                      {/* 投票済みバッジ（未開示時のみ） */}
+                      {!revealed && hasVoted && (
+                        <div className="absolute top-3 right-3 w-4 h-4 bg-green-500 rounded-full border-2 border-white shadow-md"></div>
+                      )}
                     </div>
-                    
-                    {/* 投票済みバッジ（未開示時のみ） */}
-                    {!revealed && hasVoted && (
-                      <div className="absolute top-2 right-2 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
-                    )}
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
           </main>
 
           {/* 自分の手札（投票エリア） */}
-          <div className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md p-4 shadow-[0_-5px_20px_rgba(0,0,0,0.1)] border-t border-gray-200">
-            <div className="max-w-3xl mx-auto">
-              <div className="flex gap-3 overflow-x-auto pb-2 justify-start sm:justify-center px-2">
-                {CARDS.map((card) => {
-                  const isSelected = userId && roomData.users?.[userId]?.vote === card;
-                  return (
-                    <button
-                      key={card}
-                      onClick={() => handleVote(card)}
-                      disabled={revealed} // 開示後は投票禁止
-                      className={`
-                        flex-shrink-0 w-12 h-16 sm:w-16 sm:h-24 rounded-lg font-bold text-xl sm:text-2xl transition-all duration-200
-                        border-2 shadow-sm
-                        ${isSelected 
-                          ? 'bg-indigo-600 text-white border-indigo-600 -translate-y-3 shadow-indigo-200' 
-                          : 'bg-white text-gray-600 border-gray-200 hover:border-indigo-300 hover:bg-indigo-50'}
-                        ${revealed ? 'opacity-50 cursor-not-allowed' : ''}
-                      `}
-                    >
-                      {card}
-                    </button>
-                  );
-                })}
+          <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md shadow-[0_-5px_30px_rgba(0,0,0,0.15)] border-t border-gray-200 z-10">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+              <div className="max-w-3xl mx-auto">
+                <p className="text-sm font-semibold text-gray-600 mb-4 text-center">
+                  {revealed ? '結果が開示されました' : 'カードを選んで投票してください'}
+                </p>
+                <div className="flex gap-3 overflow-x-auto pb-2 justify-center px-2">
+                  {CARDS.map((card) => {
+                    const isSelected = userId && roomData.users?.[userId]?.vote === card;
+                    return (
+                      <button
+                        key={card}
+                        onClick={() => handleVote(card)}
+                        disabled={revealed}
+                        className={`
+                          shrink-0 w-16 h-24 sm:w-20 sm:h-28 rounded-xl font-bold text-2xl sm:text-3xl transition-all duration-200
+                          border-2 shadow-lg
+                          ${isSelected 
+                            ? 'bg-indigo-600 text-white border-indigo-700 -translate-y-4 shadow-indigo-300 scale-110' 
+                            : 'bg-white text-gray-700 border-gray-300 hover:border-indigo-400 hover:bg-indigo-50 hover:shadow-xl'}
+                          ${revealed ? 'opacity-50 cursor-not-allowed hover:scale-100 hover:translate-y-0' : 'hover:-translate-y-2'}
+                        `}
+                      >
+                        {card}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </div>
         </>
         : 
-        <div className="text-center py-10">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900 mx-auto mb-4"></div>
-          <p className="text-gray-500">ルームデータを読み込んでいます...</p>
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-indigo-100 rounded-full mb-6">
+              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-600"></div>
+            </div>
+            <p className="text-gray-600 font-semibold">ルームデータを読み込んでいます...</p>
+            <p className="text-sm text-gray-400 mt-2">しばらくお待ちください</p>
+          </div>
         </div>
       }
     </div>
