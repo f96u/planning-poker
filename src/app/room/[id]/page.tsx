@@ -77,18 +77,17 @@ export default function RoomPage() {
   }
 
   const resetTable = () => {
-    if (!roomId || !roomData || !roomData.users) return;
+    if (!roomId || !roomData?.users) return;
 
     // 一括更新用のオブジェクトを作成
-    const updates: any = {};
-    
-    // 1. ルームのステータスを戻す
-    updates[`rooms/${roomId}/status`] = 'voting';
-
-    // 2. 全ユーザーの vote を null にする
-    Object.keys(roomData.users).forEach((uid) => {
-      updates[`rooms/${roomId}/users/${uid}/vote`] = null;
-    });
+    const updates: Record<string, unknown> = {
+      [`rooms/${roomId}/status`]: 'voting',
+      // 全ユーザーの vote を null にする
+      ...Object.keys(roomData.users).reduce<Record<string, null>>((acc, uid) => {
+        acc[`rooms/${roomId}/users/${uid}/vote`] = null;
+        return acc;
+      }, {}),
+    };
 
     // DBを一括更新
     update(ref(db), updates);
