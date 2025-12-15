@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { CreateRoomButton } from './_components/CreateRoomButton';
 import { Sparkles, Zap, Users, BarChart3 } from 'lucide-react';
 
@@ -72,6 +73,14 @@ export default function Home() {
             <p className="text-sm font-semibold text-gray-700">平均値表示</p>
           </div>
         </div>
+        <footer className="mt-16 py-8 text-center text-gray-500 text-sm">
+          <p>© 2025 Planning Poker Online</p>
+          <div className="mt-2 space-x-4">
+            <Link href="/terms" className="hover:underline">
+              利用規約・プライバシーポリシー
+            </Link>
+          </div>
+      </footer>
       </div>
     </div>
   );
