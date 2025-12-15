@@ -16,11 +16,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     title: `Room: ${roomId}`, // ブラウザのタブやOGPのタイトルになる
-    description: 'プランニングポーカーのルームに参加して見積もりを開始しましょう。',
-    
+    description: 'スクラムポーカーのルームに参加して見積もりを開始しましょう。',
+
     // layout.tsx の画像設定などを引き継ぎつつ、URLなどを上書き
     openGraph: {
-      title: `Room: ${roomId} | Planning Poker`,
+      title: `Room: ${roomId} | Scrum Poker`,
       description: 'クリックして見積もりに参加',
       url: `/rooms/${roomId}`,
     },
@@ -40,7 +40,7 @@ export default async function RoomPage({ params }: Props) {
                 <Sparkles className="w-6 h-6 text-indigo-600" />
               </div>
               <div>
-                <h1 className="text-lg font-bold text-gray-800">Planning Poker</h1>
+                <h1 className="text-lg font-bold text-gray-800">Scrum Poker</h1>
                 <p className="text-xs text-gray-500 font-mono">Room: {roomId}</p>
               </div>
             </div>

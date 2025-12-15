@@ -10,7 +10,7 @@ export default function TermsPage() {
         
         <h3 className="text-xl font-semibold mb-2">1. 免責事項</h3>
         <p className="mb-4 text-sm leading-relaxed">
-          本アプリ「Planning Poker Online」（以下、当アプリ）を利用したことによって生じた、いかなる損害（データの消失、業務の遅滞などを含む）についても、運営者は一切の責任を負いません。
+          本アプリ「Scrum Poker Online」（以下、当アプリ）を利用したことによって生じた、いかなる損害（データの消失、業務の遅滞などを含む）についても、運営者は一切の責任を負いません。
           ユーザー自身の責任においてご利用ください。
         </p>
 

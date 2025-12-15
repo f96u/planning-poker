@@ -14,7 +14,7 @@ export default function Home() {
               <Sparkles className="w-10 h-10 text-indigo-600" />
             </div>
             <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-800 mb-3">
-              Planning Poker
+              Scrum Poker
             </h1>
             <p className="text-gray-500 text-lg">
               チームで見積もりを効率的に行いましょう
@@ -53,7 +53,7 @@ export default function Home() {
           {/* フッター情報 */}
           <div className="mt-10 pt-6 border-t border-gray-200">
             <p className="text-sm text-gray-400">
-              Planning Poker は、チームの見積もりを効率化するためのツールです
+              Scrum Poker は、チームの見積もりを効率化するためのツールです
             </p>
           </div>
         </div>
@@ -73,8 +73,8 @@ export default function Home() {
             <p className="text-sm font-semibold text-gray-700">平均値表示</p>
           </div>
         </div>
-        <footer className="mt-16 py-8 text-center text-gray-500 text-sm">
-          <p>© 2025 Planning Poker Online</p>
+         <footer className="mt-16 py-8 text-center text-gray-500 text-sm">
+           <p>© 2025 Scrum Poker Online</p>
           <div className="mt-2 space-x-4">
             <Link href="/terms" className="hover:underline">
               利用規約・プライバシーポリシー

@@ -13,20 +13,20 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://planning-poker--planning-poker-de9bd.asia-east1.hosted.app'), 
+  metadataBase: new URL('https://planning-poker--planning-poker-de9bd.asia-east1.hosted.app'),
 
   title: {
-    default: 'Planning Poker Online',
-    template: '%s | Planning Poker Online',
+    default: 'Scrum Poker Online',
+    template: '%s | Scrum Poker Online',
   },
-  description: '登録不要・インストール不要ですぐに使えるプランニングポーカー。リアルタイムでチームの見積もりをサポートします。',
-  
+  description: '登録不要・インストール不要ですぐに使えるスクラムポーカー。リアルタイムでチームの見積もりをサポートします。',
+
   // Facebook, Slack, LINE用
   openGraph: {
-    title: 'Planning Poker Online',
+    title: 'Scrum Poker Online',
     description: 'チームで見積もり、サクッと合意。',
     url: '/',
-    siteName: 'Planning Poker Online',
+    siteName: 'Scrum Poker Online',
     locale: 'ja_JP',
     type: 'website',
     images: [
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
         url: '/ogp.png', // publicフォルダの画像
         width: 1200,
         height: 630,
-        alt: 'Planning Poker App Preview',
+        alt: 'Scrum Poker App Preview',
       },
     ],
   },
@@ -42,8 +42,8 @@ export const metadata: Metadata = {
   // X (旧Twitter)用
   twitter: {
     card: 'summary_large_image',
-    title: 'Planning Poker Online',
-    description: '登録不要・インストール不要ですぐに使えるプランニングポーカー。',
+    title: 'Scrum Poker Online',
+    description: '登録不要・インストール不要ですぐに使えるスクラムポーカー。',
     images: ['/ogp.png'],
   },
 };
