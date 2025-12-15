@@ -27,7 +27,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-linear-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center p-4">
       <div className="max-w-2xl w-full">
         {/* メインコンテンツ */}
         <div className="bg-white rounded-2xl shadow-2xl p-8 sm:p-12 text-center">
@@ -52,19 +52,19 @@ export default function Home() {
             </h2>
             <div className="space-y-3 text-gray-600">
               <div className="flex items-start gap-3">
-                <span className="flex-shrink-0 w-6 h-6 bg-indigo-500 text-white rounded-full flex items-center justify-center text-sm font-bold">1</span>
+                <span className="shrink-0 w-6 h-6 bg-indigo-500 text-white rounded-full flex items-center justify-center text-sm font-bold">1</span>
                 <p>「新しいルームを作成」ボタンをクリック</p>
               </div>
               <div className="flex items-start gap-3">
-                <span className="flex-shrink-0 w-6 h-6 bg-indigo-500 text-white rounded-full flex items-center justify-center text-sm font-bold">2</span>
+                <span className="shrink-0 w-6 h-6 bg-indigo-500 text-white rounded-full flex items-center justify-center text-sm font-bold">2</span>
                 <p>生成されたルームIDをチームメンバーに共有</p>
               </div>
               <div className="flex items-start gap-3">
-                <span className="flex-shrink-0 w-6 h-6 bg-indigo-500 text-white rounded-full flex items-center justify-center text-sm font-bold">3</span>
+                <span className="shrink-0 w-6 h-6 bg-indigo-500 text-white rounded-full flex items-center justify-center text-sm font-bold">3</span>
                 <p>全員が投票したら「結果を見る」で開示</p>
               </div>
               <div className="flex items-start gap-3">
-                <span className="flex-shrink-0 w-6 h-6 bg-indigo-500 text-white rounded-full flex items-center justify-center text-sm font-bold">4</span>
+                <span className="shrink-0 w-6 h-6 bg-indigo-500 text-white rounded-full flex items-center justify-center text-sm font-bold">4</span>
                 <p>次のゲームへ進む場合は「次のゲームへ」をクリック</p>
               </div>
             </div>

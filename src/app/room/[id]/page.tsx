@@ -3,51 +3,41 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { ref, update, onDisconnect, onValue } from 'firebase/database';
-import { db } from '@/lib/firebase';
+import { auth, db } from '@/lib/firebase';
 import { Room } from '@/types';
+import { signInAnonymously, onAuthStateChanged } from 'firebase/auth';
 
 // フィボナッチ数列のカード
 const CARDS = [1, 2, 3, 5, 8, 13, 21, '?']
-
-// userIdの初期化関数
-function getInitialUserId(): string {
-  if (typeof window === 'undefined') {
-    return 'user_' + Math.random().toString(36).substring(2, 9);
-  }
-  const storedUid = localStorage.getItem('poker_uid');
-  if (!storedUid) {
-    const newUid = 'user_' + Math.random().toString(36).substring(2, 9);
-    localStorage.setItem('poker_uid', newUid);
-    return newUid;
-  }
-  return storedUid;
-}
 
 export default function RoomPage() {
   const params = useParams();
   const roomId = params.id as string;
   const [roomData, setRoomData] = useState<Room | null>(null);
-  const [userId] = useState<string>(getInitialUserId);
+  const [userId, setUserId] = useState<string | null>(null);
   const [myName, setMyName] = useState('ゲスト');
 
-  // 入室処理（myName変更時も再実行）
+  // 認証
   useEffect(() => {
-    if (!userId) return;
-
-    // DB上の自分の場所
-    const userRef = ref(db, `rooms/${roomId}/users/${userId}`);
-
-    // 入室書き込み
-    update(userRef, {
-      name: myName,
-      online: true,
+    signInAnonymously(auth).catch(error => {
+      console.error('Failed to sign in anonymously:', error);
+    })
+    // ログイン状態を監視
+    const unsubscribe = onAuthStateChanged(auth, user => {
+      if (user) {
+        setUserId(user.uid);
+        const userRef = ref(db, `rooms/${roomId}/users/${user.uid}`);
+        setMyName(user.displayName || 'ゲスト');
+        update(userRef, {
+          online: true,
+        });
+        onDisconnect(userRef).update({
+          online: false,
+        });
+      }
     });
-
-    // ブラウザを閉じたら自動でオフラインにする予約
-    onDisconnect(userRef).update({
-      online: false,
-    });
-  }, [myName, roomId, userId]);
+    return () => unsubscribe();
+  }, [roomId])
 
   // リアルタイム同期
   useEffect(() => {
