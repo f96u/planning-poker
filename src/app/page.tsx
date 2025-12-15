@@ -19,7 +19,7 @@ export default function Home() {
       });
 
       const roomId = newRoomRef.key;
-      router.push(`/room/${roomId}`);
+      router.push(`/rooms/${roomId}`);
     } catch (error) {
       console.error('Failed to create room:', error);
       setIsCreating(false);
