@@ -3,14 +3,31 @@ import { Hand } from './_components/Hand';
 import { ShareButton } from './_components/ShareButton';
 import Link from 'next/link';
 import { Sparkles, Home } from 'lucide-react';
+import { Metadata } from 'next';
 
-type PageProps = {
+type Props = {
   params: Promise<{
     id: string;
   }>;
 };
 
-export default async function RoomPage({ params }: PageProps) {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const roomId = (await params).id;
+
+  return {
+    title: `Room: ${roomId}`, // ブラウザのタブやOGPのタイトルになる
+    description: 'プランニングポーカーのルームに参加して見積もりを開始しましょう。',
+    
+    // layout.tsx の画像設定などを引き継ぎつつ、URLなどを上書き
+    openGraph: {
+      title: `Room: ${roomId} | Planning Poker`,
+      description: 'クリックして見積もりに参加',
+      url: `/rooms/${roomId}`,
+    },
+  };
+}
+
+export default async function RoomPage({ params }: Props) {
   const roomId = (await params).id;
 
   return (
