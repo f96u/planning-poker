@@ -211,10 +211,10 @@ export default function RoomPage() {
           <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md shadow-[0_-5px_30px_rgba(0,0,0,0.15)] border-t border-gray-200 z-10">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
               <div className="max-w-3xl mx-auto">
-                <p className="text-sm font-semibold text-gray-600 mb-4 text-center">
+                <p className="text-sm font-semibold text-gray-600 mb-2 text-center">
                   {revealed ? '結果が開示されました' : 'カードを選んで投票してください'}
                 </p>
-                <div className="flex gap-3 overflow-x-auto pb-2 justify-center px-2">
+                <div className="flex gap-3 overflow-x-auto pb-2 pt-6 justify-center px-2">
                   {CARDS.map((card) => {
                     const isSelected = user && roomData.users?.[user.uid]?.vote === card;
                     return (
