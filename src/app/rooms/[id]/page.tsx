@@ -3,9 +3,9 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { ref, update, onDisconnect, onValue } from 'firebase/database';
-import { auth, db } from '@/lib/firebase';
+import { db } from '@/lib/firebase';
 import { Room } from '@/types';
-import { signInAnonymously, onAuthStateChanged } from 'firebase/auth';
+import { useAuth } from '@/hooks/useAuth';
 
 // フィボナッチ数列のカード
 const CARDS = [1, 2, 3, 5, 8, 13, 21, '?']
@@ -14,33 +14,26 @@ export default function RoomPage() {
   const params = useParams();
   const roomId = params.id as string;
   const [roomData, setRoomData] = useState<Room | null>(null);
-  const [userId, setUserId] = useState<string | null>(null);
+  const { user, loading: authLoading } = useAuth();
   const [myName, setMyName] = useState('ゲスト');
 
-  // 認証
+  // 入室処理
   useEffect(() => {
-    signInAnonymously(auth).catch(error => {
-      console.error('Failed to sign in anonymously:', error);
-    })
-    // ログイン状態を監視
-    const unsubscribe = onAuthStateChanged(auth, user => {
-      if (user) {
-        setUserId(user.uid);
-        const userRef = ref(db, `rooms/${roomId}/users/${user.uid}`);
-        setMyName(user.displayName || 'ゲスト');
-        update(userRef, {
-          online: true,
-        });
-        onDisconnect(userRef).update({
-          online: false,
-        });
-      }
+    if (!user) return;
+
+    const userRef = ref(db, `rooms/${roomId}/users/${user.uid}`);
+    update(userRef, {
+      name: myName,
+      online: true,
     });
-    return () => unsubscribe();
-  }, [roomId])
+    onDisconnect(userRef).update({ online: false });
+  }, [roomId, myName, user]);
 
   // リアルタイム同期
   useEffect(() => {
+    // 認証前の場合はデータ取得ができないためリアルタイム同期を停止
+    if (!user) return;
+
     const roomRef = ref(db, `rooms/${roomId}`);
     const unsubscribe = onValue(roomRef, snapshot => {
       const data = snapshot.val() as Room | null;
@@ -48,11 +41,11 @@ export default function RoomPage() {
     })
 
     return () => unsubscribe();
-  }, [roomId]);
+  }, [roomId, user]);
 
   const handleVote = (card: number | string) => {
-    if (!userId) return;
-    const userRef = ref(db, `rooms/${roomId}/users/${userId}`);
+    if (!user) return;
+    const userRef = ref(db, `rooms/${roomId}/users/${user.uid}`);
     update(userRef, {
       vote: card,
       online: true,
@@ -95,7 +88,7 @@ export default function RoomPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
-      {roomData ? 
+      {!authLoading && roomData ? 
         <>
           {/* ヘッダー & 管理パネル */}
           <header className="bg-white/80 backdrop-blur-md shadow-lg sticky top-0 z-20 border-b border-gray-200">
@@ -223,7 +216,7 @@ export default function RoomPage() {
                 </p>
                 <div className="flex gap-3 overflow-x-auto pb-2 justify-center px-2">
                   {CARDS.map((card) => {
-                    const isSelected = userId && roomData.users?.[userId]?.vote === card;
+                    const isSelected = user && roomData.users?.[user.uid]?.vote === card;
                     return (
                       <button
                         key={card}
