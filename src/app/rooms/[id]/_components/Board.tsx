@@ -151,7 +151,7 @@ export function Board({ roomId }: Props) {
 
               {/* 名前 */}
               <div className="absolute bottom-4 w-full text-center px-2">
-                <p className="text-sm font-bold text-gray-700 truncate">{user.name}</p>
+                <p className="text-sm font-bold text-gray-700 truncate">{user.name ?? 'ゲスト'}</p>
                 {!user.online && (
                   <p className="text-xs text-gray-400 mt-1">オフライン</p>
                 )}
