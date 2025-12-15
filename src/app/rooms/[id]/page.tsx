@@ -1,5 +1,6 @@
 import { Board } from './_components/Board';
 import { Hand } from './_components/Hand';
+import { ShareButton } from './_components/ShareButton';
 
 type PageProps = {
   params: Promise<{
@@ -24,6 +25,8 @@ export default async function RoomPage({ params }: PageProps) {
                 <p className="text-xs text-gray-500 font-mono">Room: {roomId}</p>
               </div>
             </div>
+
+            <ShareButton />
           </div>
         </div>
       </header>
