@@ -1,7 +1,8 @@
 import { Board } from './_components/Board';
 import { Hand } from './_components/Hand';
 import { ShareButton } from './_components/ShareButton';
-import { Sparkles } from 'lucide-react';
+import Link from 'next/link';
+import { Sparkles, Home } from 'lucide-react';
 
 type PageProps = {
   params: Promise<{
@@ -27,7 +28,16 @@ export default async function RoomPage({ params }: PageProps) {
               </div>
             </div>
 
-            <ShareButton />
+            <div className="flex items-center gap-3">
+              <ShareButton />
+              <Link
+                href="/"
+                className="inline-flex items-center gap-1.5 rounded-full border border-gray-300 bg-white/80 px-3 py-1.5 text-xs font-semibold text-gray-700 shadow-sm hover:bg-gray-50 hover:border-gray-400 transition-colors"
+              >
+                <Home className="h-4 w-4" />
+                <span>トップへ</span>
+              </Link>
+            </div>
           </div>
         </div>
       </header>
