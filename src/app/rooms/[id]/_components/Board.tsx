@@ -13,7 +13,6 @@ type Props = {
 export function Board({ roomId }: Props) {
   const [roomData, setRoomData] = useState<Room | null>(null);
   const { user, loading: authLoading } = useAuth();
-  const [myName] = useState('ゲスト');
 
   // 入室処理
   useEffect(() => {
@@ -21,11 +20,10 @@ export function Board({ roomId }: Props) {
 
     const userRef = ref(db, `rooms/${roomId}/users/${user.uid}`);
     update(userRef, {
-      name: myName,
       online: true,
     });
     onDisconnect(userRef).update({ online: false });
-  }, [roomId, myName, user]);
+  }, [roomId, user]);
 
   // リアルタイム同期
   useEffect(() => {

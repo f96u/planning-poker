@@ -16,8 +16,9 @@ type Props = {
 export function Hand({ roomId }: Props) {
   const [roomData, setRoomData] = useState<Room | null>(null);
   const { user, loading: authLoading } = useAuth();
+  const [editingName, setEditingName] = useState('');
 
-  // リアルタイム同期（手札エリア用）
+  // リアルタイム同期
   useEffect(() => {
     if (!user) return;
 
@@ -32,6 +33,23 @@ export function Hand({ roomId }: Props) {
 
   const revealed = roomData?.status === 'revealed';
   const isLoading = authLoading || !roomData;
+  const currentName =
+    (user && roomData?.users?.[user.uid]?.name) || 'ゲスト';
+
+  const handleNameFocus = () => {
+    // 初回フォーカス時に名前が未入力なら現在の名前で初期化
+    if (editingName === '' && currentName) {
+      setEditingName(currentName);
+    }
+  };
+
+  const handleNameBlur = () => {
+    if (!user) return;
+    const trimmed = editingName.trim() || currentName || 'ゲスト';
+    setEditingName(trimmed);
+    const userRef = ref(db, `rooms/${roomId}/users/${user.uid}`);
+    update(userRef, { name: trimmed, online: true });
+  };
 
   const handleVote = (card: number | string) => {
     if (!user) return;
@@ -44,6 +62,20 @@ export function Hand({ roomId }: Props) {
 
   return (
     <>
+      {/* 自分の名前編集 */}
+      <div className="max-w-md mx-auto mb-4 flex items-center gap-2">
+        <label className="text-sm text-gray-600 whitespace-nowrap">あなたの名前</label>
+        <input
+          type="text"
+          value={editingName}
+          onChange={(e) => setEditingName(e.target.value)}
+          onFocus={handleNameFocus}
+          onBlur={handleNameBlur}
+          placeholder="名前を入力"
+          className="flex-1 font-semibold rounded-md border border-gray-300 px-2 py-1 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white"
+        />
+      </div>
+
       <p className="text-sm font-semibold text-gray-600 mb-2 text-center">
         {revealed ? '結果が開示されました' : 'カードを選んで投票してください'}
       </p>
