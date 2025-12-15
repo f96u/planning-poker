@@ -33,7 +33,7 @@ export default function Home() {
               </div>
               <div className="flex items-start gap-3">
                 <span className="shrink-0 w-6 h-6 bg-indigo-500 text-white rounded-full flex items-center justify-center text-sm font-bold">2</span>
-                <p>生成されたルームIDをチームメンバーに共有</p>
+                <p>ルーム画面右上の「URLを共有」ボタンをクリックし、表示されたURLを参加してほしいメンバーに共有</p>
               </div>
               <div className="flex items-start gap-3">
                 <span className="shrink-0 w-6 h-6 bg-indigo-500 text-white rounded-full flex items-center justify-center text-sm font-bold">3</span>
