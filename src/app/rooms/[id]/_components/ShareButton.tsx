@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { Share2 } from 'lucide-react';
 
 export function ShareButton() {
   const [copied, setCopied] = useState(false);
@@ -26,8 +27,8 @@ export function ShareButton() {
         onClick={handleShare}
         className="inline-flex items-center gap-2 rounded-full border border-gray-300 bg-white/80 px-3 py-1.5 text-xs font-semibold text-gray-700 shadow-sm hover:bg-gray-50 hover:border-gray-400 transition-colors"
       >
+        <Share2 className="h-4 w-4" />
         <span>URLを共有</span>
-        <span className="text-sm">🔗</span>
       </button>
 
       {(copied || error) && (

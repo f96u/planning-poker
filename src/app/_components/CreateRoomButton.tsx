@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { ref, push, serverTimestamp, set } from 'firebase/database';
 import { useRouter } from 'next/navigation';
+import { Rocket, Loader2 } from 'lucide-react';
 import { db } from '@/lib/firebase';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -47,17 +48,17 @@ export function CreateRoomButton() {
     >
       {loading ? (
         <>
-          <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white text-2xl"></div>
+          <Loader2 className="h-5 w-5 animate-spin" />
           <span>読み込み中...</span>
         </>
       ) : isCreating ? (
         <>
-          <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white text-2xl"></div>
+          <Loader2 className="h-5 w-5 animate-spin" />
           <span>作成中...</span>
         </>
       ) : (
         <>
-          <span className="h-5 w-5 mb-2">🚀</span>
+          <Rocket className="h-5 w-5" />
           <span>新しいルームを作成</span>
         </>
       )}

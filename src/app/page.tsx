@@ -1,4 +1,5 @@
 import { CreateRoomButton } from './_components/CreateRoomButton';
+import { Sparkles, Zap, Users, BarChart3 } from 'lucide-react';
 
 export default function Home() {
   return (
@@ -9,7 +10,7 @@ export default function Home() {
           {/* アイコン・タイトル */}
           <div className="mb-8">
             <div className="inline-flex items-center justify-center w-20 h-20 bg-indigo-100 rounded-full mb-6">
-              <span className="text-5xl">🃏</span>
+              <Sparkles className="w-10 h-10 text-indigo-600" />
             </div>
             <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-800 mb-3">
               Planning Poker
@@ -22,7 +23,7 @@ export default function Home() {
           {/* 説明 */}
           <div className="mb-10 text-left bg-gray-50 rounded-xl p-6 space-y-4">
             <h2 className="font-bold text-gray-700 text-lg mb-4 flex items-center gap-2">
-              <span className="text-2xl">✨</span>
+              <Sparkles className="w-5 h-5 text-indigo-500" />
               使い方
             </h2>
             <div className="space-y-3 text-gray-600">
@@ -59,15 +60,15 @@ export default function Home() {
         {/* 特徴 */}
         <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 text-center shadow-md">
-            <div className="text-3xl mb-2">⚡</div>
+            <Zap className="mx-auto mb-2 h-7 w-7 text-indigo-500" />
             <p className="text-sm font-semibold text-gray-700">リアルタイム同期</p>
           </div>
           <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 text-center shadow-md">
-            <div className="text-3xl mb-2">👥</div>
+            <Users className="mx-auto mb-2 h-7 w-7 text-indigo-500" />
             <p className="text-sm font-semibold text-gray-700">複数人対応</p>
           </div>
           <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 text-center shadow-md">
-            <div className="text-3xl mb-2">📊</div>
+            <BarChart3 className="mx-auto mb-2 h-7 w-7 text-indigo-500" />
             <p className="text-sm font-semibold text-gray-700">平均値表示</p>
           </div>
         </div>

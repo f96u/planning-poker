@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { ref, update, onDisconnect, onValue } from 'firebase/database';
+import { RefreshCw, Eye } from 'lucide-react';
 import { db } from '@/lib/firebase';
 import { Room } from '@/types';
 import { useAuth } from '@/hooks/useAuth';
@@ -81,7 +82,7 @@ export function Board({ roomId }: Props) {
                 }}
                 className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2.5 px-6 rounded-full shadow-lg transition-all duration-200 transform hover:scale-105 active:scale-95 inline-flex items-center gap-2"
               >
-                <span>🔄</span>
+                <RefreshCw className="h-4 w-4" />
                 <span>次のゲームへ</span>
               </button>
             </div>
@@ -107,6 +108,7 @@ export function Board({ roomId }: Props) {
                 }}
                 className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-6 rounded-full shadow-lg transition-all duration-200 transform hover:scale-105 active:scale-95 inline-flex items-center gap-2"
               >
+                <Eye className="h-4 w-4" />
                 <span>結果を見る</span>
               </button>
             </div>
