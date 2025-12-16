@@ -2,6 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getDatabase } from "firebase/database";
+import { getAnalytics, Analytics, isSupported } from "firebase/analytics";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -22,5 +23,15 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
+// サーバー側で実行されるとエラーになるため、typeof window !== 'undefined' でガードする
+let analytics: Analytics | undefined;
 
-export { db, auth }
+if (typeof window !== 'undefined') {
+  // isSupported() は環境がAnalyticsに対応しているかチェックする関数
+  isSupported().then((yes) => {
+    if (yes) {
+      analytics = getAnalytics(app);
+    }
+  });
+}
+export { db, auth, analytics }
