@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://planning-poker--planning-poker-de9bd.asia-east1.hosted.app'),
+  metadataBase: new URL('https://poker.divingbase.tech'),
 
   title: {
     default: 'Scrum Poker Online',
