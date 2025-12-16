@@ -33,33 +33,34 @@ export default async function RoomPage({ params }: Props) {
   return (
     <div className="min-h-screen bg-linear-to-br from-indigo-50 via-white to-purple-50">
       <header className="bg-white/80 backdrop-blur-md shadow-lg sticky top-0 z-20 border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row justify-between items-center py-4 gap-4">
-            <div className="flex items-center gap-3">
-              <div className="inline-flex items-center justify-center w-10 h-10 bg-indigo-100 rounded-full">
-                <Sparkles className="w-6 h-6 text-indigo-600" />
+        <div className="max-w-7xl mx-auto px-3 sm:px-4">
+          <div className="flex items-center justify-between py-1.5 gap-2">
+            <div className="flex items-center gap-2 min-w-0">
+              <div className="inline-flex items-center justify-center w-7 h-7 bg-indigo-100 rounded-full shrink-0">
+                <Sparkles className="w-4 h-4 text-indigo-600" />
               </div>
-              <div>
-                <h1 className="text-lg font-bold text-gray-800">Scrum Poker</h1>
-                <p className="text-xs text-gray-500 font-mono">Room: {roomId}</p>
+              <div className="min-w-0">
+                <h1 className="text-sm font-bold text-gray-800 truncate">Scrum Poker</h1>
+                <p className="text-[10px] text-gray-500 font-mono truncate">Room: {roomId}</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1.5 shrink-0">
               <ShareButton />
               <Link
                 href="/"
-                className="inline-flex items-center gap-1.5 rounded-full border border-gray-300 bg-white/80 px-3 py-1.5 text-xs font-semibold text-gray-700 shadow-sm hover:bg-gray-50 hover:border-gray-400 transition-colors"
+                className="inline-flex items-center gap-1 rounded-full border border-gray-300 bg-white/80 px-2 py-1 text-[10px] font-semibold text-gray-700 shadow-sm hover:bg-gray-50 hover:border-gray-400 transition-colors"
+                title="トップへ"
               >
-                <Home className="h-4 w-4" />
-                <span>トップへ</span>
+                <Home className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">トップへ</span>
               </Link>
             </div>
           </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-32">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 pb-32">
         <Board roomId={roomId} />
       </main>
 

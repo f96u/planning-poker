@@ -25,10 +25,11 @@ export function ShareButton() {
       <button
         type="button"
         onClick={handleShare}
-        className="inline-flex items-center gap-2 rounded-full border border-gray-300 bg-white/80 px-3 py-1.5 text-xs font-semibold text-gray-700 shadow-sm hover:bg-gray-50 hover:border-gray-400 transition-colors"
+        className="inline-flex items-center gap-1 rounded-full border border-gray-300 bg-white/80 px-2 py-1 text-[10px] font-semibold text-gray-700 shadow-sm hover:bg-gray-50 hover:border-gray-400 transition-colors"
+        title="URLを共有"
       >
-        <Share2 className="h-4 w-4" />
-        <span>URLを共有</span>
+        <Share2 className="h-3.5 w-3.5" />
+        <span className="hidden sm:inline">URLを共有</span>
       </button>
 
       {(copied || error) && (

@@ -79,7 +79,7 @@ export function Hand({ roomId }: Props) {
       <p className="text-sm font-semibold text-gray-600 mb-2 text-center">
         {revealed ? '結果が開示されました' : 'カードを選んで投票してください'}
       </p>
-      <div className="flex gap-3 overflow-x-auto pb-3 pt-6 justify-center px-2">
+      <div className="flex flex-wrap justify-center gap-3 px-2 pt-4 pb-3 sm:flex-nowrap">
         {CARDS.map((card) => {
           const isSelected = user && roomData?.users?.[user.uid]?.vote === card;
           return (
@@ -88,7 +88,7 @@ export function Hand({ roomId }: Props) {
               onClick={() => handleVote(card)}
               disabled={revealed || isLoading}
               className={`
-                shrink-0 w-16 h-24 sm:w-20 sm:h-28 rounded-xl font-bold text-2xl sm:text-3xl transition-all duration-200
+                shrink-0 w-16 h-24 md:w-20 md:h-28 rounded-xl font-bold text-2xl md:text-3xl transition-all duration-200
                 border-2 shadow-lg
                 ${
                   isSelected
