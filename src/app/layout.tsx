@@ -16,10 +16,10 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://poker.divingbase.tech'),
 
   title: {
-    default: 'Scrum Poker Online',
+    default: 'Scrum Poker Online - 登録不要・完全無料のスクラムポーカー',
     template: '%s | Scrum Poker Online',
   },
-  description: '登録不要・インストール不要ですぐに使えるスクラムポーカー。リアルタイムでチームの見積もりをサポートします。',
+  description: 'アジャイル開発・スクラム開発の見積もりを効率化。ログイン不要ですぐに使える、シンプルで軽量なスクラムポーカーツールです。',
 
   // Facebook, Slack, LINE用
   openGraph: {
