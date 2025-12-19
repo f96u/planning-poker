@@ -13,6 +13,7 @@ type Props = {
 
 export function PlayerCard({ uid, player, isCurrentUser, revealed, onRemove }: Props) {
   const hasVoted = player.vote !== undefined && player.vote !== null;
+  const isObserver = !!player.isObserver; // デフォルトはfalse（参加者）
 
   return (
     <div
@@ -30,6 +31,7 @@ export function PlayerCard({ uid, player, isCurrentUser, revealed, onRemove }: P
         ${revealed && player.vote === '?' && !isCurrentUser ? 'border-yellow-400 bg-yellow-50' : ''}
         ${revealed && player.vote === '?' && isCurrentUser ? 'border-blue-400 bg-yellow-50' : ''}
         ${!player.online ? 'opacity-40 grayscale' : ''}
+        ${isObserver ? 'opacity-60 border-dashed' : ''}
       `}
     >
       {/* 削除ボタン（自分以外の場合のみ表示） */}
@@ -64,6 +66,9 @@ export function PlayerCard({ uid, player, isCurrentUser, revealed, onRemove }: P
         
         {!player.online && (
           <p className="text-xs text-gray-400 mt-1">オフライン</p>
+        )}
+        {isObserver && (
+          <p className="text-xs text-gray-500 mt-1 font-semibold">非参加</p>
         )}
       </div>
 

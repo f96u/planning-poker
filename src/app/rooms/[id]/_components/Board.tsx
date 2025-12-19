@@ -23,6 +23,7 @@ export function Board({ roomId }: Props) {
     const userRef = ref(db, `rooms/${roomId}/users/${user.uid}`);
     update(userRef, {
       online: true,
+      // isObserverはデフォルトでfalse（参加者）なので明示的に設定しない
     });
     onDisconnect(userRef).update({ online: false });
   }, [roomId, user]);
@@ -44,7 +45,12 @@ export function Board({ roomId }: Props) {
   const usersList = Object.entries(roomData?.users || {});
   const revealed = roomData?.status === 'revealed';
 
-  const validVotes = usersList
+  // オブザーバーではないユーザー（参加者）のみを対象にする
+  const participatingUsers = usersList.filter(
+    ([, user]) => !user.isObserver
+  );
+
+  const validVotes = participatingUsers
     .map(([, user]) => user.vote)
     .filter((vote) => typeof vote === 'number') as number[];
   const average =
@@ -104,8 +110,8 @@ export function Board({ roomId }: Props) {
               <p className="text-sm text-gray-600 font-semibold">投票受付中...</p>
             </div>
             <p className="text-[11px] text-gray-400">
-              {usersList.filter(([, u]) => u.vote !== null && u.vote !== undefined).length} /{' '}
-              {usersList.length} 人が投票済み
+              {participatingUsers.filter(([, u]) => u.vote !== null && u.vote !== undefined).length} /{' '}
+              {participatingUsers.length} 人が投票済み
             </p>
             <div className="flex justify-center gap-2 sm:gap-3 pt-1.5 sm:pt-2">
               <button
