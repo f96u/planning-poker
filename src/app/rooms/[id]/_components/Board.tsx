@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ref, update, onDisconnect, onValue, remove } from 'firebase/database';
+import { ref, update, onValue, remove } from 'firebase/database';
 import { RefreshCw, Eye } from 'lucide-react';
 import Confetti from 'react-confetti';
 import { db } from '@/lib/firebase';
@@ -17,18 +17,6 @@ export function Board({ roomId }: Props) {
   const [roomData, setRoomData] = useState<Room | null>(null);
   const { user, loading: authLoading } = useAuth();
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
-
-  // 入室処理
-  useEffect(() => {
-    if (!user) return;
-
-    const userRef = ref(db, `rooms/${roomId}/users/${user.uid}`);
-    update(userRef, {
-      online: true,
-      // isObserverはデフォルトでfalse（参加者）なので明示的に設定しない
-    });
-    onDisconnect(userRef).update({ online: false });
-  }, [roomId, user]);
 
   // ウィンドウサイズの取得
   useEffect(() => {
