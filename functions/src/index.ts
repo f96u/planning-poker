@@ -1,5 +1,4 @@
 import {setGlobalOptions} from "firebase-functions";
-import {onRequest} from "firebase-functions/https";
 import * as logger from "firebase-functions/logger";
 import * as admin from "firebase-admin";
 import { onSchedule } from "firebase-functions/scheduler";
@@ -8,6 +7,9 @@ setGlobalOptions({ maxInstances: 10 });
 
 admin.initializeApp();
 
+/**
+ * 24時間以上経過したルームを削除
+ */
 export const cleanupOldRooms = onSchedule(
   {
     schedule: 'every day 04:00',
