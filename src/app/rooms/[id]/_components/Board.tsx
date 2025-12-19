@@ -1,11 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ref, update, onDisconnect, onValue } from 'firebase/database';
+import { ref, update, onDisconnect, onValue, remove } from 'firebase/database';
 import { RefreshCw, Eye } from 'lucide-react';
 import { db } from '@/lib/firebase';
 import { Room } from '@/types';
 import { useAuth } from '@/hooks/useAuth';
+import { PlayerCard } from './PlayerCard';
 
 type Props = {
   roomId: string;
@@ -52,6 +53,12 @@ export function Board({ roomId }: Props) {
       : null;
 
   const isLoading = authLoading || !roomData;
+
+  const handleRemovePlayer = (targetUid: string) => {
+    if (!user || !roomId || targetUid === user.uid) return;
+    const userRef = ref(db, `rooms/${roomId}/users/${targetUid}`);
+    remove(userRef);
+  };
 
   return (
     <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-4 sm:p-6 mb-6 sm:mb-8">
@@ -122,48 +129,16 @@ export function Board({ roomId }: Props) {
         <span>参加メンバー（{usersList.length}人）</span>
       </h2>
       <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
-        {usersList.map(([uid, user]) => {
-          const hasVoted = user.vote !== undefined && user.vote !== null;
-          return (
-            <div
-              key={uid}
-              className={`
-                relative w-24 h-36 sm:w-28 sm:h-40 rounded-xl shadow-lg flex flex-col items-center justify-center transition-all duration-300
-                ${
-                  hasVoted
-                    ? 'bg-linear-to-br from-indigo-50 to-purple-50 -translate-y-2 shadow-xl border-2 border-indigo-200'
-                    : 'bg-gray-50 border-2 border-gray-200'
-                }
-                ${revealed && user.vote === '?' ? 'border-yellow-400 bg-yellow-50' : ''}
-                ${!user.online ? 'opacity-40 grayscale' : ''}
-              `}
-            >
-              {/* カードの中身 */}
-              <div
-                className={`
-                  text-3xl sm:text-4xl font-bold mb-2 sm:mb-3 transition-all duration-300
-                  ${revealed ? 'text-gray-800' : 'text-transparent'}
-                  ${!revealed && hasVoted ? 'text-green-500' : ''}
-                `}
-              >
-                {revealed ? user.vote ?? '-' : hasVoted ? '✓' : ''}
-              </div>
-
-              {/* 名前 */}
-              <div className="absolute bottom-3 sm:bottom-4 w-full text-center px-2">
-                <p className="text-xs sm:text-sm font-bold text-gray-700 truncate">{user.name ?? 'ゲスト'}</p>
-                {!user.online && (
-                  <p className="text-xs text-gray-400 mt-1">オフライン</p>
-                )}
-              </div>
-
-              {/* 投票済みバッジ（未開示時のみ） */}
-              {!revealed && hasVoted && (
-                <div className="absolute top-3 right-3 w-4 h-4 bg-green-500 rounded-full border-2 border-white shadow-md"></div>
-              )}
-            </div>
-          );
-        })}
+        {usersList.map(([uid, player]) => (
+          <PlayerCard
+            key={uid}
+            uid={uid}
+            player={player}
+            isCurrentUser={uid === user?.uid}
+            revealed={revealed}
+            onRemove={handleRemovePlayer}
+          />
+        ))}
       </div>
     </div>
   );
