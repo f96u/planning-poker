@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { ref, update, onDisconnect, onValue, remove } from 'firebase/database';
 import { RefreshCw, Eye } from 'lucide-react';
+import Confetti from 'react-confetti';
 import { db } from '@/lib/firebase';
 import { Room } from '@/types';
 import { useAuth } from '@/hooks/useAuth';
@@ -15,6 +16,7 @@ type Props = {
 export function Board({ roomId }: Props) {
   const [roomData, setRoomData] = useState<Room | null>(null);
   const { user, loading: authLoading } = useAuth();
+  const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
 
   // 入室処理
   useEffect(() => {
@@ -27,6 +29,16 @@ export function Board({ roomId }: Props) {
     });
     onDisconnect(userRef).update({ online: false });
   }, [roomId, user]);
+
+  // ウィンドウサイズの取得
+  useEffect(() => {
+    const updateWindowSize = () => {
+      setWindowSize({ width: window.innerWidth, height: window.innerHeight });
+    };
+    updateWindowSize();
+    window.addEventListener('resize', updateWindowSize);
+    return () => window.removeEventListener('resize', updateWindowSize);
+  }, []);
 
   // リアルタイム同期
   useEffect(() => {
@@ -58,6 +70,12 @@ export function Board({ roomId }: Props) {
       ? (validVotes.reduce((sum, vote) => sum + vote, 0) / validVotes.length).toFixed(1)
       : null;
 
+  // 全員の投票が一致しているかチェック
+  const allVotesMatch =
+    revealed &&
+    validVotes.length >= 2 &&
+    validVotes.every((vote) => vote === validVotes[0]);
+
   const isLoading = authLoading || !roomData;
 
   const handleRemovePlayer = (targetUid: string) => {
@@ -67,7 +85,17 @@ export function Board({ roomId }: Props) {
   };
 
   return (
-    <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-4 sm:p-6 mb-6 sm:mb-8">
+    <>
+      {allVotesMatch && windowSize.width > 0 && windowSize.height > 0 && (
+        <Confetti
+          width={windowSize.width}
+          height={windowSize.height}
+          recycle={false}
+          numberOfPieces={500}
+          gravity={0.3}
+        />
+      )}
+      <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-4 sm:p-6 mb-6 sm:mb-8">
       {/* 上部ステータスエリア */}
       <div className="mb-4 sm:mb-6 space-y-2 sm:space-y-3 text-center">
         {isLoading ? (
@@ -147,6 +175,7 @@ export function Board({ roomId }: Props) {
         ))}
       </div>
     </div>
+    </>
   );
 }
 
