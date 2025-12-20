@@ -37,6 +37,23 @@ export function Board({ roomId }: Props) {
     remove(userRef);
   };
 
+  const handleNextGame = () => {
+    if (!roomId || !roomData?.users) return;
+    const updates: Record<string, unknown> = {
+      [`rooms/${roomId}/status`]: 'voting',
+      ...Object.keys(roomData.users).reduce<Record<string, null>>((acc, uid) => {
+        acc[`rooms/${roomId}/users/${uid}/vote`] = null;
+        return acc;
+      }, {}),
+    };
+    update(ref(db), updates);
+  };
+
+  const handleRevealResults = () => {
+    if (!roomId) return;
+    update(ref(db), { [`rooms/${roomId}/status`]: 'revealed' });
+  };
+
   return (
     <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-4 sm:p-6 mb-6 sm:mb-8">
       {/* 上部ステータスエリア */}
@@ -53,17 +70,7 @@ export function Board({ roomId }: Props) {
             <p className="text-xs sm:text-sm text-gray-400">平均値</p>
             <div className="flex justify-center gap-2 sm:gap-3 pt-1.5 sm:pt-2">
               <button
-                onClick={() => {
-                  if (!roomId || !roomData?.users) return;
-                  const updates: Record<string, unknown> = {
-                    [`rooms/${roomId}/status`]: 'voting',
-                    ...Object.keys(roomData.users).reduce<Record<string, null>>((acc, uid) => {
-                      acc[`rooms/${roomId}/users/${uid}/vote`] = null;
-                      return acc;
-                    }, {}),
-                  };
-                  update(ref(db), updates);
-                }}
+                onClick={handleNextGame}
                 className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-1.5 px-4 sm:py-2 sm:px-5 rounded-full shadow-lg transition-all duration-200 transform hover:scale-105 active:scale-95 inline-flex items-center gap-1.5"
               >
                 <RefreshCw className="h-4 w-4" />
@@ -86,10 +93,7 @@ export function Board({ roomId }: Props) {
             </p>
             <div className="flex justify-center gap-2 sm:gap-3 pt-1.5 sm:pt-2">
               <button
-                onClick={() => {
-                  if (!roomId) return;
-                  update(ref(db), { [`rooms/${roomId}/status`]: 'revealed' });
-                }}
+                onClick={handleRevealResults}
                 className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-1.5 px-4 sm:py-2 sm:px-5 rounded-full shadow-lg transition-all duration-200 transform hover:scale-105 active:scale-95 inline-flex items-center gap-1.5"
               >
                 <Eye className="h-4 w-4" />
