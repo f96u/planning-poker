@@ -1,7 +1,7 @@
 'use client';
 
 import { ref, update, remove } from 'firebase/database';
-import { RefreshCw, Eye } from 'lucide-react';
+import { RefreshCw, Eye, Coffee } from 'lucide-react';
 import { db } from '@/lib/firebase';
 import { useAuth } from '@/hooks/useAuth';
 import { useRoomData } from '@/hooks/useRoomData';
@@ -55,7 +55,25 @@ export function Board({ roomId }: Props) {
   };
 
   return (
-    <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-4 sm:p-6 mb-6 sm:mb-8">
+    <div className="relative bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-4 sm:p-6 mb-6 sm:mb-8">
+      {/* Buy Me a Coffee リンク */}
+      {revealed && (
+        <div className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 flex flex-col items-end gap-2 group z-10">
+          <span className="text-xs opacity-0 group-hover:opacity-100 transition-opacity bg-gray-800/90 text-white px-2 py-1 rounded pointer-events-none whitespace-nowrap relative font-semibold">
+            開発者にコーヒーを奢る
+            <span className="absolute bottom-0 right-1 translate-y-full w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-800/90"></span>
+          </span>
+          <a
+            href="https://buymeacoffee.com/f96u"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gray-500 hover:text-amber-600 transition-colors"
+            title="Buy Me a Coffee"
+          >
+            <Coffee className="h-4 w-4 group-hover:scale-110 transition-transform" />
+          </a>
+        </div>
+      )}
       {/* 上部ステータスエリア */}
       <div className="mb-4 sm:mb-6 space-y-2 sm:space-y-3 text-center">
         {isLoading ? (
