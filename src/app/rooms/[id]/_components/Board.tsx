@@ -1,12 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { ref, update, onDisconnect, onValue, remove } from 'firebase/database';
+import { ref, update, remove } from 'firebase/database';
 import { RefreshCw, Eye } from 'lucide-react';
-import Confetti from 'react-confetti';
 import { db } from '@/lib/firebase';
-import { Room } from '@/types';
 import { useAuth } from '@/hooks/useAuth';
+import { useRoomData } from '@/hooks/useRoomData';
 import { PlayerCard } from './PlayerCard';
 
 type Props = {
@@ -14,45 +12,8 @@ type Props = {
 };
 
 export function Board({ roomId }: Props) {
-  const [roomData, setRoomData] = useState<Room | null>(null);
-  const { user, loading: authLoading } = useAuth();
-  const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
-
-  // 入室処理
-  useEffect(() => {
-    if (!user) return;
-
-    const userRef = ref(db, `rooms/${roomId}/users/${user.uid}`);
-    update(userRef, {
-      online: true,
-      // isObserverはデフォルトでfalse（参加者）なので明示的に設定しない
-    });
-    onDisconnect(userRef).update({ online: false });
-  }, [roomId, user]);
-
-  // ウィンドウサイズの取得
-  useEffect(() => {
-    const updateWindowSize = () => {
-      setWindowSize({ width: window.innerWidth, height: window.innerHeight });
-    };
-    updateWindowSize();
-    window.addEventListener('resize', updateWindowSize);
-    return () => window.removeEventListener('resize', updateWindowSize);
-  }, []);
-
-  // リアルタイム同期
-  useEffect(() => {
-    // 認証前の場合はデータ取得ができないためリアルタイム同期を停止
-    if (!user) return;
-
-    const roomRef = ref(db, `rooms/${roomId}`);
-    const unsubscribe = onValue(roomRef, (snapshot) => {
-      const data = snapshot.val() as Room | null;
-      setRoomData(data);
-    });
-
-    return () => unsubscribe();
-  }, [roomId, user]);
+  const { user } = useAuth();
+  const { roomData, isLoading } = useRoomData(roomId);
 
   const usersList = Object.entries(roomData?.users || {});
   const revealed = roomData?.status === 'revealed';
@@ -70,32 +31,31 @@ export function Board({ roomId }: Props) {
       ? (validVotes.reduce((sum, vote) => sum + vote, 0) / validVotes.length).toFixed(1)
       : null;
 
-  // 全員の投票が一致しているかチェック
-  const allVotesMatch =
-    revealed &&
-    validVotes.length >= 2 &&
-    validVotes.every((vote) => vote === validVotes[0]);
-
-  const isLoading = authLoading || !roomData;
-
   const handleRemovePlayer = (targetUid: string) => {
     if (!user || !roomId || targetUid === user.uid) return;
     const userRef = ref(db, `rooms/${roomId}/users/${targetUid}`);
     remove(userRef);
   };
 
+  const handleNextGame = () => {
+    if (!roomId || !roomData?.users) return;
+    const updates: Record<string, unknown> = {
+      [`rooms/${roomId}/status`]: 'voting',
+      ...Object.keys(roomData.users).reduce<Record<string, null>>((acc, uid) => {
+        acc[`rooms/${roomId}/users/${uid}/vote`] = null;
+        return acc;
+      }, {}),
+    };
+    update(ref(db), updates);
+  };
+
+  const handleRevealResults = () => {
+    if (!roomId) return;
+    update(ref(db), { [`rooms/${roomId}/status`]: 'revealed' });
+  };
+
   return (
-    <>
-      {allVotesMatch && windowSize.width > 0 && windowSize.height > 0 && (
-        <Confetti
-          width={windowSize.width}
-          height={windowSize.height}
-          recycle={false}
-          numberOfPieces={500}
-          gravity={0.3}
-        />
-      )}
-      <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-4 sm:p-6 mb-6 sm:mb-8">
+    <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-4 sm:p-6 mb-6 sm:mb-8">
       {/* 上部ステータスエリア */}
       <div className="mb-4 sm:mb-6 space-y-2 sm:space-y-3 text-center">
         {isLoading ? (
@@ -110,17 +70,7 @@ export function Board({ roomId }: Props) {
             <p className="text-xs sm:text-sm text-gray-400">平均値</p>
             <div className="flex justify-center gap-2 sm:gap-3 pt-1.5 sm:pt-2">
               <button
-                onClick={() => {
-                  if (!roomId || !roomData?.users) return;
-                  const updates: Record<string, unknown> = {
-                    [`rooms/${roomId}/status`]: 'voting',
-                    ...Object.keys(roomData.users).reduce<Record<string, null>>((acc, uid) => {
-                      acc[`rooms/${roomId}/users/${uid}/vote`] = null;
-                      return acc;
-                    }, {}),
-                  };
-                  update(ref(db), updates);
-                }}
+                onClick={handleNextGame}
                 className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-1.5 px-4 sm:py-2 sm:px-5 rounded-full shadow-lg transition-all duration-200 transform hover:scale-105 active:scale-95 inline-flex items-center gap-1.5"
               >
                 <RefreshCw className="h-4 w-4" />
@@ -143,10 +93,7 @@ export function Board({ roomId }: Props) {
             </p>
             <div className="flex justify-center gap-2 sm:gap-3 pt-1.5 sm:pt-2">
               <button
-                onClick={() => {
-                  if (!roomId) return;
-                  update(ref(db), { [`rooms/${roomId}/status`]: 'revealed' });
-                }}
+                onClick={handleRevealResults}
                 className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-1.5 px-4 sm:py-2 sm:px-5 rounded-full shadow-lg transition-all duration-200 transform hover:scale-105 active:scale-95 inline-flex items-center gap-1.5"
               >
                 <Eye className="h-4 w-4" />
@@ -175,7 +122,6 @@ export function Board({ roomId }: Props) {
         ))}
       </div>
     </div>
-    </>
   );
 }
 
