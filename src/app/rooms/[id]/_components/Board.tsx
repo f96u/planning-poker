@@ -1,11 +1,13 @@
 'use client';
 
 import { ref, update, remove } from 'firebase/database';
-import { RefreshCw, Eye, Coffee } from 'lucide-react';
-import { db } from '@/lib/firebase';
+import { logEvent } from 'firebase/analytics';
+import { RefreshCw, Eye } from 'lucide-react';
+import { db, analytics } from '@/lib/firebase';
 import { useAuth } from '@/hooks/useAuth';
 import { useRoomData } from '@/hooks/useRoomData';
 import { PlayerCard } from './PlayerCard';
+import { BuyMeACoffeeLink } from '@/app/_components/BuyMeACoffeeLink';
 
 type Props = {
   roomId: string;
@@ -52,7 +54,13 @@ export function Board({ roomId }: Props) {
   const handleRevealResults = () => {
     if (!roomId) return;
     update(ref(db), { [`rooms/${roomId}/status`]: 'revealed' });
+    
+    // GAにイベント送信
+    if (analytics) {
+      logEvent(analytics, 'results_revealed');
+    }
   };
+
 
   return (
     <div className="relative bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-4 sm:p-6 mb-6 sm:mb-8">
@@ -63,15 +71,7 @@ export function Board({ roomId }: Props) {
             開発者にコーヒーを奢る
             <span className="absolute bottom-0 right-1 translate-y-full w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-800/90"></span>
           </span>
-          <a
-            href="https://buymeacoffee.com/f96u"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-gray-500 hover:text-amber-600 transition-colors"
-            title="Buy Me a Coffee"
-          >
-            <Coffee className="h-4 w-4 group-hover:scale-110 transition-transform" />
-          </a>
+          <BuyMeACoffeeLink sourcePage="room" iconOnly />
         </div>
       )}
       {/* 上部ステータスエリア */}
