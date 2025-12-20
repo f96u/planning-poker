@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { CreateRoomButton } from './_components/CreateRoomButton';
-import { Sparkles, Zap, Users, BarChart3, Coffee } from 'lucide-react';
+import { BuyMeACoffeeLink } from './_components/BuyMeACoffeeLink';
+import { Sparkles, Zap, Users, BarChart3 } from 'lucide-react';
 
 export default function Home() {
   return (
@@ -79,16 +80,7 @@ export default function Home() {
             <Link href="/terms" className="hover:underline">
               利用規約・プライバシーポリシー
             </Link>
-            <a
-              href="https://buymeacoffee.com/f96u"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-gray-500 hover:underline"
-              title="Buy Me a Coffee"
-            >
-              <Coffee className="h-3 w-3" />
-              <span className="">開発者にコーヒーを奢る</span>
-            </a>
+            <BuyMeACoffeeLink sourcePage="top" />
           </div>
       </footer>
       </div>

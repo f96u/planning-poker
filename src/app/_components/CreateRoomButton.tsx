@@ -2,9 +2,10 @@
 
 import { useState } from 'react';
 import { ref, push, serverTimestamp, set } from 'firebase/database';
+import { logEvent } from 'firebase/analytics';
 import { useRouter } from 'next/navigation';
 import { Rocket, Loader2 } from 'lucide-react';
-import { db } from '@/lib/firebase';
+import { db, analytics } from '@/lib/firebase';
 import { useAuth } from '@/hooks/useAuth';
 
 export function CreateRoomButton() {
@@ -26,6 +27,12 @@ export function CreateRoomButton() {
       });
 
       const roomId = newRoomRef.key;
+      
+      // GAにイベント送信
+      if (analytics) {
+        logEvent(analytics, 'room_created');
+      }
+      
       router.push(`/rooms/${roomId}`);
     } catch (error) {
       console.error('Failed to create room:', error);
