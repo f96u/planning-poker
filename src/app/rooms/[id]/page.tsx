@@ -2,6 +2,7 @@ import { Board } from './_components/Board';
 import { Hand } from './_components/Hand';
 import { ShareButton } from './_components/ShareButton';
 import { RoomEntry } from './_components/RoomEntry';
+import { ConfettiCelebration } from './_components/ConfettiCelebration';
 import Link from 'next/link';
 import { Sparkles, Home } from 'lucide-react';
 import { Metadata } from 'next';
@@ -33,6 +34,7 @@ export default async function RoomPage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-linear-to-br from-indigo-50 via-white to-purple-50">
+      <ConfettiCelebration roomId={roomId} />
       <RoomEntry roomId={roomId} />
       <header className="bg-white/80 backdrop-blur-md shadow-lg sticky top-0 z-20 border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-3 sm:px-4">

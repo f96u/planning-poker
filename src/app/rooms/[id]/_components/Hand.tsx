@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { ref, update, onValue } from 'firebase/database';
+import { useState } from 'react';
+import { ref, update } from 'firebase/database';
 import { db } from '@/lib/firebase';
-import { Room } from '@/types';
 import { useAuth } from '@/hooks/useAuth';
+import { useRoomData } from '@/hooks/useRoomData';
 
 // フィボナッチ数列のカード
 const CARDS = [1, 2, 3, 5, 8, 13, 21, '?'];
@@ -14,25 +14,11 @@ type Props = {
 };
 
 export function Hand({ roomId }: Props) {
-  const [roomData, setRoomData] = useState<Room | null>(null);
-  const { user, loading: authLoading } = useAuth();
+  const { user } = useAuth();
+  const { roomData, isLoading } = useRoomData(roomId);
   const [editingName, setEditingName] = useState('');
 
-  // リアルタイム同期
-  useEffect(() => {
-    if (!user) return;
-
-    const roomRef = ref(db, `rooms/${roomId}`);
-    const unsubscribe = onValue(roomRef, (snapshot) => {
-      const data = snapshot.val() as Room | null;
-      setRoomData(data);
-    });
-
-    return () => unsubscribe();
-  }, [roomId, user]);
-
   const revealed = roomData?.status === 'revealed';
-  const isLoading = authLoading || !roomData;
   const currentName =
     (user && roomData?.users?.[user.uid]?.name) || 'ゲスト';
   const isObserver = !!(user && roomData?.users?.[user.uid]?.isObserver); // デフォルトはfalse（参加者）
