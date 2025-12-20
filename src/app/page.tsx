@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { CreateRoomButton } from './_components/CreateRoomButton';
-import { Sparkles, Zap, Users, BarChart3 } from 'lucide-react';
+import { Sparkles, Zap, Users, BarChart3, Coffee } from 'lucide-react';
 
 export default function Home() {
   return (
@@ -75,10 +75,20 @@ export default function Home() {
         </div>
          <footer className="mt-16 py-8 text-center text-gray-500 text-sm">
            <p>© 2025 Scrum Poker Online</p>
-          <div className="mt-2 space-x-4">
+          <div className="mt-2 flex items-center justify-center gap-4 flex-wrap">
             <Link href="/terms" className="hover:underline">
               利用規約・プライバシーポリシー
             </Link>
+            <a
+              href="https://buymeacoffee.com/f96u"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-gray-500 hover:underline"
+              title="Buy Me a Coffee"
+            >
+              <Coffee className="h-3 w-3" />
+              <span className="">開発者にコーヒーを奢る</span>
+            </a>
           </div>
       </footer>
       </div>
