@@ -5,12 +5,14 @@ import { ref, push, serverTimestamp, set } from 'firebase/database';
 import { logEvent } from 'firebase/analytics';
 import { useRouter } from 'next/navigation';
 import { Rocket, Loader2 } from 'lucide-react';
+import { useAtomValue } from 'jotai';
 import { db, analytics } from '@/lib/firebase';
-import { useAuth } from '@/hooks/useAuth';
+import { userAtom, authLoadingAtom } from '@/store/auth';
 
 export function CreateRoomButton() {
   const router = useRouter();
-  const { user, loading } = useAuth();
+  const user = useAtomValue(userAtom);
+  const loading = useAtomValue(authLoadingAtom);
   const [isCreating, setIsCreating] = useState(false);
 
   const createRoom = async () => {
