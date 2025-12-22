@@ -4,7 +4,8 @@ import { ref, update, remove } from 'firebase/database';
 import { logEvent } from 'firebase/analytics';
 import { RefreshCw, Eye } from 'lucide-react';
 import { db, analytics } from '@/lib/firebase';
-import { useAuth } from '@/hooks/useAuth';
+import { useAtomValue } from 'jotai';
+import { userAtom } from '@/store/auth';
 import { useRoomData } from '@/hooks/useRoomData';
 import { PlayerCard } from './PlayerCard';
 import { BuyMeACoffeeLink } from '@/app/_components/BuyMeACoffeeLink';
@@ -14,7 +15,7 @@ type Props = {
 };
 
 export function Board({ roomId }: Props) {
-  const { user } = useAuth();
+  const user = useAtomValue(userAtom);
   const { roomData, isLoading } = useRoomData(roomId);
 
   const usersList = Object.entries(roomData?.users || {});

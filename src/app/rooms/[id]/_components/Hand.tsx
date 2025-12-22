@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 import { ref, update } from 'firebase/database';
+import { useAtomValue } from 'jotai';
 import { db } from '@/lib/firebase';
-import { useAuth } from '@/hooks/useAuth';
+import { userAtom } from '@/store/auth';
 import { useRoomData } from '@/hooks/useRoomData';
 
 // フィボナッチ数列のカード
@@ -14,7 +15,7 @@ type Props = {
 };
 
 export function Hand({ roomId }: Props) {
-  const { user } = useAuth();
+  const user = useAtomValue(userAtom);
   const { roomData, isLoading } = useRoomData(roomId);
   const [editingName, setEditingName] = useState('');
 
