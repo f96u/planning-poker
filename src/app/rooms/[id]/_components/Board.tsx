@@ -31,7 +31,7 @@ export function Board({ roomId }: Props) {
     .filter((vote) => typeof vote === 'number') as number[];
   const average =
     validVotes.length > 0
-      ? (validVotes.reduce((sum, vote) => sum + vote, 0) / validVotes.length).toFixed(1)
+      ? Math.round(validVotes.reduce((sum, vote) => sum + vote, 0) / validVotes.length)
       : null;
 
   const handleRemovePlayer = (targetUid: string) => {
