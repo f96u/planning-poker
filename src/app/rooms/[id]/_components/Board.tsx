@@ -44,6 +44,7 @@ export function Board({ roomId }: Props) {
     if (!roomId || !roomData?.users) return;
     const updates: Record<string, unknown> = {
       [`rooms/${roomId}/status`]: 'voting',
+      [`rooms/${roomId}/previousAverage`]: average,
       ...Object.keys(roomData.users).reduce<Record<string, null>>((acc, uid) => {
         acc[`rooms/${roomId}/users/${uid}/vote`] = null;
         return acc;
@@ -110,6 +111,11 @@ export function Board({ roomId }: Props) {
               {participatingUsers.filter(([, u]) => u.vote !== null && u.vote !== undefined).length} /{' '}
               {participatingUsers.length} 人が投票済み
             </p>
+            {typeof roomData?.previousAverage === 'number' && (
+              <p className="text-[11px] sm:text-sm text-gray-400">
+                前回の平均: <span className="font-bold text-gray-500">{roomData.previousAverage}</span>
+              </p>
+            )}
             <div className="flex justify-center gap-2 sm:gap-3 pt-1.5 sm:pt-2">
               <button
                 onClick={handleRevealResults}
