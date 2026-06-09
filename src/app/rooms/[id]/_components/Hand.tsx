@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ref, update } from 'firebase/database';
 import { useAtomValue } from 'jotai';
 import { db } from '@/lib/firebase';
@@ -9,6 +9,9 @@ import { useRoomData } from '@/hooks/useRoomData';
 
 // フィボナッチ数列のカード
 const CARDS = [1, 2, 3, 5, 8, 13, 21, '?'];
+
+// 入室時に名前の初期値として再利用するための localStorage キー
+const NAME_STORAGE_KEY = 'planning-poker:player-name';
 
 type Props = {
   roomId: string;
@@ -20,9 +23,26 @@ export function Hand({ roomId }: Props) {
   const [editingName, setEditingName] = useState('');
 
   const revealed = roomData?.status === 'revealed';
-  const currentName =
-    (user && roomData?.users?.[user.uid]?.name) || 'ゲスト';
+  const roomUserName = user ? roomData?.users?.[user.uid]?.name : undefined;
+  const currentName = roomUserName || 'ゲスト';
   const isObserver = !!(user && roomData?.users?.[user.uid]?.isObserver); // デフォルトはfalse（参加者）
+
+  // 名前は人に紐づくものとして扱う。
+  // 入室時、ルームの名前が localStorage の最新名と異なれば最新名に揃える。
+  useEffect(() => {
+    if (!user || !roomData?.users?.[user.uid]) return;
+    let savedName: string | null = null;
+    try {
+      savedName = localStorage.getItem(NAME_STORAGE_KEY);
+    } catch {
+      // localStorage が使えない環境では何もしない
+    }
+    // 保存名があり、ルームの名前と異なる場合のみ更新（同じならムダな書き込みをしない）
+    if (savedName && savedName !== roomUserName) {
+      const userRef = ref(db, `rooms/${roomId}/users/${user.uid}`);
+      update(userRef, { name: savedName, online: true });
+    }
+  }, [user, roomId, roomUserName, roomData?.users]);
 
   const handleNameFocus = () => {
     // 初回フォーカス時に名前が未入力なら現在の名前で初期化
@@ -35,6 +55,12 @@ export function Hand({ roomId }: Props) {
     if (!user) return;
     const trimmed = editingName.trim() || currentName || 'ゲスト';
     setEditingName(trimmed);
+    // 次回以降の入室時の初期値として保存する
+    try {
+      localStorage.setItem(NAME_STORAGE_KEY, trimmed);
+    } catch {
+      // localStorage が使えない環境では何もしない
+    }
     const userRef = ref(db, `rooms/${roomId}/users/${user.uid}`);
     update(userRef, { name: trimmed, online: true });
   };
