@@ -4,10 +4,14 @@ import { ref, update, remove } from 'firebase/database';
 import { logEvent } from 'firebase/analytics';
 import { RefreshCw, Eye } from 'lucide-react';
 import { db, analytics } from '@/lib/firebase';
+import { createResetTimer } from '@/lib/timer';
 import { useAtomValue } from 'jotai';
 import { userAtom } from '@/store/auth';
 import { useRoomData } from '@/hooks/useRoomData';
+import { useTimerState } from '@/hooks/useTimerState';
+import { useTimerDocumentTitle } from '@/hooks/useTimerDocumentTitle';
 import { PlayerCard } from './PlayerCard';
+import { TimerStatusRow, TimerToggleButton } from './TimerControls';
 import { BuyMeACoffeeLink } from '@/app/_components/BuyMeACoffeeLink';
 
 type Props = {
@@ -17,6 +21,9 @@ type Props = {
 export function Board({ roomId }: Props) {
   const user = useAtomValue(userAtom);
   const { roomData, isLoading } = useRoomData(roomId);
+  // タイマー使用中は「投票受付中...」より残り時間の方が知りたい情報なので、その位置に表示する
+  const timer = useTimerState(roomId);
+  useTimerDocumentTitle(timer.running, timer.remainingMs, timer.isExpired);
 
   const usersList = Object.entries(roomData?.users || {});
   const revealed = roomData?.status === 'revealed';
@@ -55,8 +62,14 @@ export function Board({ roomId }: Props) {
 
   const handleRevealResults = () => {
     if (!roomId) return;
-    update(ref(db), { [`rooms/${roomId}/status`]: 'revealed' });
-    
+    const updates: Record<string, unknown> = { [`rooms/${roomId}/status`]: 'revealed' };
+    // 議論は結果開示で終わりなので、タイマーを止めてリセットする
+    if (roomData?.timer) {
+      updates[`rooms/${roomId}/timer`] = createResetTimer(roomData.timer.durationSec);
+    }
+    update(ref(db), updates);
+
+
     // GAにイベント送信
     if (analytics) {
       logEvent(analytics, 'results_revealed');
@@ -66,6 +79,13 @@ export function Board({ roomId }: Props) {
 
   return (
     <div className="relative bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-4 sm:p-6 mb-6 sm:mb-8">
+      {/* 議論タイマーのON/OFF。補助的な機能なので右上に小さく置く */}
+      {!isLoading && !revealed && (
+        <div className="absolute top-2 right-2 sm:top-3 sm:right-3 z-10">
+          <TimerToggleButton timer={timer} />
+        </div>
+      )}
+
       {/* Buy Me a Coffee リンク */}
       {revealed && (
         <div className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 flex flex-col items-end gap-2 group z-10">
@@ -100,12 +120,20 @@ export function Board({ roomId }: Props) {
           </>
         ) : (
           <>
-            <div className="flex items-center justify-center gap-2 sm:gap-3">
-              <span className="relative flex h-4 w-4">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-4 w-4 bg-green-500"></span>
-              </span>
-              <p className="text-sm text-gray-600 font-semibold">投票受付中...</p>
+            {/* タイマーの有無で高さが変わらないよう、どちらも同じ高さの1行に収める。
+                1行に収まらない狭い幅ではタイマー行だけ折り返す */}
+            <div className="flex min-h-9 flex-wrap items-center justify-center gap-2 sm:gap-3 px-6 sm:px-8">
+              {timer.isEnabled ? (
+                <TimerStatusRow timer={timer} />
+              ) : (
+                <>
+                  <span className="relative flex h-4 w-4">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-4 w-4 bg-green-500"></span>
+                  </span>
+                  <p className="text-sm text-gray-600 font-semibold">投票受付中...</p>
+                </>
+              )}
             </div>
             <p className="text-[11px] text-gray-400">
               {participatingUsers.filter(([, u]) => u.vote !== null && u.vote !== undefined).length} /{' '}
