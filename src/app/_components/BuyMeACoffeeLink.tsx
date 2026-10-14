@@ -19,22 +19,18 @@ export function BuyMeACoffeeLink({ sourcePage, iconOnly = false }: Props) {
     }
   };
 
-  if (iconOnly) {
-    return (
-      <a
-        href="https://buymeacoffee.com/f96u"
-        target="_blank"
-        rel="noopener noreferrer"
-        onClick={handleClick}
-        className="text-gray-500 hover:text-amber-600 transition-colors"
-        title="Buy Me a Coffee"
-      >
-        <Coffee className="h-4 w-4 group-hover:scale-110 transition-transform" />
-      </a>
-    );
-  }
-
-  return (
+  return iconOnly ? (
+    <a
+      href="https://buymeacoffee.com/f96u"
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={handleClick}
+      className="text-gray-500 hover:text-amber-600 transition-colors"
+      title="Buy Me a Coffee"
+    >
+      <Coffee className="h-4 w-4 group-hover:scale-110 transition-transform" />
+    </a>
+  ) : (
     <a
       href="https://buymeacoffee.com/f96u"
       target="_blank"
