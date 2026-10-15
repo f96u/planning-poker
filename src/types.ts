@@ -15,8 +15,10 @@ export interface Timer {
 }
 
 // ルームの型
+export type RoomStatus = 'voting' | 'revealed';
+
 export interface Room {
-  status: 'voting' | 'revealed'; // 投票中 または 開示済み
+  status: RoomStatus;             // 投票中 または 開示済み
   users: Record<string, User>;   // IDをキーにしたUserオブジェクト
   createdAt: number;
   previousAverage?: number | null; // 直前ラウンドの平均（未実施時は undefined）

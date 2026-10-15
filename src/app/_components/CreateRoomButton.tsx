@@ -8,6 +8,7 @@ import { Rocket, Loader2 } from 'lucide-react';
 import { useAtomValue } from 'jotai';
 import { db, analytics } from '@/lib/firebase';
 import { userAtom, authLoadingAtom } from '@/store/auth';
+import type { RoomStatus } from '@/types';
 
 export function CreateRoomButton() {
   const router = useRouter();
@@ -24,7 +25,7 @@ export function CreateRoomButton() {
       const newRoomRef = push(ref(db, 'rooms'));
       await set(newRoomRef, {
         createdAt: serverTimestamp(),
-        status: 'voting', // voting, revealed
+        status: 'voting' satisfies RoomStatus,
         users: {},
       });
 
@@ -74,5 +75,3 @@ export function CreateRoomButton() {
     </button>
   );
 }
-
-

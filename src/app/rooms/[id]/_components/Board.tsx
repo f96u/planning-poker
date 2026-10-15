@@ -13,6 +13,7 @@ import { useTimerDocumentTitle } from '@/hooks/useTimerDocumentTitle';
 import { PlayerCard } from './PlayerCard';
 import { TimerStatusRow, TimerToggleButton } from './TimerControls';
 import { BuyMeACoffeeLink } from '@/app/_components/BuyMeACoffeeLink';
+import type { RoomStatus } from '@/types';
 
 type Props = {
   roomId: string;
@@ -50,7 +51,7 @@ export function Board({ roomId }: Props) {
   const handleNextGame = () => {
     if (!roomId || !roomData?.users) return;
     const updates: Record<string, unknown> = {
-      [`rooms/${roomId}/status`]: 'voting',
+      [`rooms/${roomId}/status`]: 'voting' satisfies RoomStatus,
       [`rooms/${roomId}/previousAverage`]: average,
       ...Object.keys(roomData.users).reduce<Record<string, null>>((acc, uid) => {
         acc[`rooms/${roomId}/users/${uid}/vote`] = null;
@@ -62,7 +63,9 @@ export function Board({ roomId }: Props) {
 
   const handleRevealResults = () => {
     if (!roomId) return;
-    const updates: Record<string, unknown> = { [`rooms/${roomId}/status`]: 'revealed' };
+    const updates: Record<string, unknown> = {
+      [`rooms/${roomId}/status`]: 'revealed' satisfies RoomStatus,
+    };
     // 議論は結果開示で終わりなので、タイマーを止めてリセットする
     if (roomData?.timer) {
       updates[`rooms/${roomId}/timer`] = createResetTimer(roomData.timer.durationSec);
@@ -177,5 +180,4 @@ export function Board({ roomId }: Props) {
     </div>
   );
 }
-
 
