@@ -1,8 +1,10 @@
 'use client';
 
-import { logEvent } from 'firebase/analytics';
 import { Coffee } from 'lucide-react';
-import { analytics } from '@/lib/firebase';
+import {
+  ANALYTICS_EVENTS,
+  logAnalyticsEvent,
+} from '@/services/analytics';
 
 type Props = {
   sourcePage: 'top' | 'room';
@@ -11,12 +13,9 @@ type Props = {
 
 export function BuyMeACoffeeLink({ sourcePage, iconOnly = false }: Props) {
   const handleClick = () => {
-    // GAにイベント送信
-    if (analytics) {
-      logEvent(analytics, 'buy_me_a_coffee_clicked', {
-        source_page: sourcePage,
-      });
-    }
+    logAnalyticsEvent(ANALYTICS_EVENTS.buyMeACoffeeClicked, {
+      source_page: sourcePage,
+    });
   };
 
   return iconOnly ? (
@@ -44,4 +43,3 @@ export function BuyMeACoffeeLink({ sourcePage, iconOnly = false }: Props) {
     </a>
   );
 }
-

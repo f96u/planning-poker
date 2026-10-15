@@ -23,15 +23,4 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
-// サーバー側で実行されるとエラーになるため、typeof window !== 'undefined' でガードする
-let analytics: Analytics | undefined;
-
-if (typeof window !== 'undefined') {
-  // isSupported() は環境がAnalyticsに対応しているかチェックする関数
-  isSupported().then((yes) => {
-    if (yes) {
-      analytics = getAnalytics(app);
-    }
-  });
-}
-export { db, auth, analytics }
+export { db, auth }

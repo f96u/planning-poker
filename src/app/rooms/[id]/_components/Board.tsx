@@ -1,9 +1,12 @@
 'use client';
 
 import { ref, update, remove } from 'firebase/database';
-import { logEvent } from 'firebase/analytics';
 import { RefreshCw, Eye } from 'lucide-react';
-import { db, analytics } from '@/lib/firebase';
+import { db } from '@/lib/firebase';
+import {
+  ANALYTICS_EVENTS,
+  logAnalyticsEvent,
+} from '@/services/analytics';
 import { createResetTimer } from '@/lib/timer';
 import { useAtomValue } from 'jotai';
 import { userAtom } from '@/store/auth';
@@ -73,10 +76,7 @@ export function Board({ roomId }: Props) {
     update(ref(db), updates);
 
 
-    // GAにイベント送信
-    if (analytics) {
-      logEvent(analytics, 'results_revealed');
-    }
+    logAnalyticsEvent(ANALYTICS_EVENTS.resultsRevealed);
   };
 
 
@@ -180,4 +180,3 @@ export function Board({ roomId }: Props) {
     </div>
   );
 }
-

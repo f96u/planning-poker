@@ -2,11 +2,14 @@
 
 import { useState } from 'react';
 import { ref, push, serverTimestamp, set } from 'firebase/database';
-import { logEvent } from 'firebase/analytics';
 import { useRouter } from 'next/navigation';
 import { Rocket, Loader2 } from 'lucide-react';
 import { useAtomValue } from 'jotai';
-import { db, analytics } from '@/lib/firebase';
+import { db } from '@/lib/firebase';
+import {
+  ANALYTICS_EVENTS,
+  logAnalyticsEvent,
+} from '@/services/analytics';
 import { userAtom, authLoadingAtom } from '@/store/auth';
 import type { RoomStatus } from '@/types';
 
@@ -31,10 +34,7 @@ export function CreateRoomButton() {
 
       const roomId = newRoomRef.key;
       
-      // GAにイベント送信
-      if (analytics) {
-        logEvent(analytics, 'room_created');
-      }
+      logAnalyticsEvent(ANALYTICS_EVENTS.roomCreated);
       
       router.push(`/rooms/${roomId}`);
     } catch (error) {
