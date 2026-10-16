@@ -1,11 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { ref, set, remove } from 'firebase/database';
 import { useAtomValue } from 'jotai';
 import { db } from '@/lib/firebase';
 import { userAtom } from '@/store/auth';
 import { useRoomData } from '@/hooks/useRoomData';
 import { useServerTimeOffset } from '@/hooks/useServerTimeOffset';
-import { createResetTimer, getDurationSec, getRemainingMs, getServerNow } from '@/lib/timer';
+import {
+  createResetTimer,
+  formatRemaining,
+  getDurationSec,
+  getRemainingMs,
+  getServerNow,
+} from '@/lib/timer';
 
 // 残りがこの時間以下になったら警告色にする
 const WARNING_THRESHOLD_MS = 60 * 1000;
@@ -14,10 +20,9 @@ const WARNING_THRESHOLD_MS = 60 * 1000;
 const TICK_INTERVAL_MS = 250;
 
 /**
- * ルームで共有している議論タイマーの状態と操作をまとめる。
- * ヘッダーのタイマーとボードの表示で同じ値・同じ操作を使うために切り出している。
+ * ルームで共有している議論タイマーの状態・操作とドキュメントタイトルを管理する。
  */
-export function useTimerState(roomId: string) {
+export function useTimer(roomId: string) {
   const { roomData } = useRoomData(roomId);
   const offset = useServerTimeOffset();
   const user = useAtomValue(userAtom);
@@ -45,6 +50,30 @@ export function useTimerState(roomId: string) {
   // 計測が始まっている状態
   const isActive = running || isPaused;
   const progress = Math.max(0, Math.min(1, remainingMs / (durationSec * 1000)));
+
+  const titlePrefix = running
+    ? `${isExpired ? '⏰' : '⏱'} ${formatRemaining(remainingMs)}`
+    : '';
+  const originalTitleRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    // 計測中でなければ、書き換えていた場合のみ元のタイトルに戻す
+    if (!titlePrefix) {
+      if (originalTitleRef.current !== null) {
+        document.title = originalTitleRef.current;
+        originalTitleRef.current = null;
+      }
+      return;
+    }
+    // 元のタイトルは書き換える前の一度だけ覚える（毎秒の更新で上書きしない）
+    if (originalTitleRef.current === null) originalTitleRef.current = document.title;
+    document.title = `${titlePrefix} | ${originalTitleRef.current}`;
+  }, [titlePrefix]);
+
+  // ルームを離れるときにタイトルを戻す
+  useEffect(() => () => {
+    if (originalTitleRef.current !== null) document.title = originalTitleRef.current;
+  }, []);
 
   const writeTimer = (nextRemainingMs: number, nextRunning: boolean) => {
     if (!user) return;
@@ -110,4 +139,4 @@ export function useTimerState(roomId: string) {
   };
 }
 
-export type TimerState = ReturnType<typeof useTimerState>;
+export type TimerState = ReturnType<typeof useTimer>;

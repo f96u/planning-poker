@@ -11,8 +11,7 @@ import { createResetTimer } from '@/lib/timer';
 import { useAtomValue } from 'jotai';
 import { userAtom } from '@/store/auth';
 import { useRoomData } from '@/hooks/useRoomData';
-import { useTimerState } from '@/hooks/useTimerState';
-import { useTimerDocumentTitle } from '@/hooks/useTimerDocumentTitle';
+import { useTimer } from '@/hooks/useTimer';
 import { PlayerCard } from './PlayerCard';
 import { TimerStatusRow, TimerToggleButton } from './TimerControls';
 import { BuyMeACoffeeLink } from '@/app/_components/BuyMeACoffeeLink';
@@ -26,8 +25,7 @@ export function Board({ roomId }: Props) {
   const user = useAtomValue(userAtom);
   const { roomData, isLoading } = useRoomData(roomId);
   // タイマー使用中は「投票受付中...」より残り時間の方が知りたい情報なので、その位置に表示する
-  const timer = useTimerState(roomId);
-  useTimerDocumentTitle(timer.running, timer.remainingMs, timer.isExpired);
+  const timer = useTimer(roomId);
 
   const usersList = Object.entries(roomData?.users || {});
   const revealed = roomData?.status === 'revealed';
