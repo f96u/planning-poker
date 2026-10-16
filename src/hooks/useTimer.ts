@@ -6,18 +6,60 @@ import { userAtom } from '@/store/auth';
 import { useRoomData } from '@/hooks/useRoomData';
 import { useServerTimeOffset } from '@/hooks/useServerTimeOffset';
 import {
-  createResetTimer,
   formatRemaining,
-  getDurationSec,
-  getRemainingMs,
   getServerNow,
 } from '@/lib/timer';
+import type { Timer } from '@/types';
 
 // 残りがこの時間以下になったら警告色にする
 const WARNING_THRESHOLD_MS = 60 * 1000;
 
 // カウントダウンの更新間隔（ミリ秒）
 const TICK_INTERVAL_MS = 250;
+
+// 未設定のルームで初期表示する時間（秒）
+export const DEFAULT_TIMER_DURATION_SEC = 5 * 60;
+
+// 設定できる時間（秒）。スライダーで 1分 〜 20分 を 1分刻みで選べる。
+export const MIN_TIMER_DURATION_SEC = 60;
+export const MAX_TIMER_DURATION_SEC = 20 * 60;
+export const TIMER_DURATION_STEP_SEC = 60;
+
+/**
+ * 設定時間（秒）を取得する。
+ * 未設定・不正値の場合はデフォルト値に、範囲外の場合は上下限に丸める。
+ */
+export function getDurationSec(timer?: Timer): number {
+  const durationSec = timer?.durationSec;
+  if (typeof durationSec !== 'number' || durationSec <= 0) return DEFAULT_TIMER_DURATION_SEC;
+  return Math.min(Math.max(durationSec, MIN_TIMER_DURATION_SEC), MAX_TIMER_DURATION_SEC);
+}
+
+/**
+ * 残り時間（ミリ秒）を求める。
+ * now には端末の時計のズレを補正した現在時刻を渡すこと。
+ * 時間切れの判定に使うため、マイナス値はそのまま返す。
+ */
+export function getRemainingMs(timer: Timer | undefined, now: number): number {
+  const fullMs = getDurationSec(timer) * 1000;
+  if (!timer) return fullMs;
+  if (timer.running && typeof timer.endsAt === 'number') return timer.endsAt - now;
+  return typeof timer.remainingMs === 'number' ? timer.remainingMs : fullMs;
+}
+
+/**
+ * 停止してリセットした状態のタイマーを作る。
+ * 次のラウンドでも同じ時間で始められるよう、設定時間は引き継ぐ。
+ */
+function createResetTimer(durationSec: number): Timer {
+  const sec = getDurationSec({ durationSec, remainingMs: 0, running: false });
+  return {
+    durationSec: sec,
+    endsAt: null,
+    remainingMs: sec * 1000,
+    running: false,
+  };
+}
 
 /**
  * ルームで共有している議論タイマーの状態・操作とドキュメントタイトルを管理する。

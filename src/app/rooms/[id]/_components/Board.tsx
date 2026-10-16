@@ -7,7 +7,6 @@ import {
   ANALYTICS_EVENTS,
   logAnalyticsEvent,
 } from '@/services/analytics';
-import { createResetTimer } from '@/lib/timer';
 import { useAtomValue } from 'jotai';
 import { userAtom } from '@/store/auth';
 import { useRoomData } from '@/hooks/useRoomData';
@@ -64,17 +63,13 @@ export function Board({ roomId }: Props) {
 
   const handleRevealResults = () => {
     if (!roomId) return;
+    logAnalyticsEvent(ANALYTICS_EVENTS.resultsRevealed);
     const updates: Record<string, unknown> = {
       [`rooms/${roomId}/status`]: 'revealed' satisfies RoomStatus,
     };
-    // 議論は結果開示で終わりなので、タイマーを止めてリセットする
-    if (roomData?.timer) {
-      updates[`rooms/${roomId}/timer`] = createResetTimer(roomData.timer.durationSec);
-    }
     update(ref(db), updates);
-
-
-    logAnalyticsEvent(ANALYTICS_EVENTS.resultsRevealed);
+    // 議論は結果開示で終わりなので、タイマーを止めてリセットする
+    timer.reset();
   };
 
 

@@ -2,11 +2,14 @@
 
 import { useEffect, useId, useRef, useState } from 'react';
 import { AlarmClock, Pause, Play, RotateCcw, Timer as TimerIcon } from 'lucide-react';
-import type { TimerState } from '@/hooks/useTimer';
 import {
+  TimerState,
   MAX_TIMER_DURATION_SEC,
   MIN_TIMER_DURATION_SEC,
   TIMER_DURATION_STEP_SEC,
+} from '@/hooks/useTimer';
+
+import {
   formatDuration,
   formatRemaining,
 } from '@/lib/timer';
