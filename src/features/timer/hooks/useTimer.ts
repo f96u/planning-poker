@@ -167,5 +167,3 @@ export function useTimer(roomId: string) {
     disable,
   };
 }
-
-export type TimerState = ReturnType<typeof useTimer>;
