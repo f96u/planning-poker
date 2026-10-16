@@ -10,9 +10,8 @@ import {
 import { useAtomValue } from 'jotai';
 import { userAtom } from '@/store/auth';
 import { useRoomData } from '@/hooks/useRoomData';
-import { useTimer } from '@/hooks/useTimer';
+import { TimerStatusRow, TimerToggleButton, useTimer } from '@/features/timer';
 import { PlayerCard } from './PlayerCard';
-import { TimerStatusRow, TimerToggleButton } from './TimerControls';
 import { BuyMeACoffeeLink } from '@/app/_components/BuyMeACoffeeLink';
 import type { RoomStatus } from '@/types';
 

@@ -5,12 +5,12 @@ import { db } from '@/lib/firebase';
 import { userAtom } from '@/store/auth';
 import { useRoomData } from '@/hooks/useRoomData';
 import { useServerTimeOffset } from '@/hooks/useServerTimeOffset';
-import { formatRemaining } from '@/lib/formatRemaining';
+import { formatRemaining } from '../func/formatRemaining';
 import type { Timer } from '@/types';
 import {
   MAX_TIMER_DURATION_SEC,
   MIN_TIMER_DURATION_SEC,
-} from '@/config/timer';
+} from '../durationRange';
 
 // 残りがこの時間以下になったら警告色にする
 const WARNING_THRESHOLD_MS = 60 * 1000;

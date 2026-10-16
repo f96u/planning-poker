@@ -2,17 +2,19 @@
 
 import { useEffect, useId, useRef, useState } from 'react';
 import { AlarmClock, Pause, Play, RotateCcw, Timer as TimerIcon } from 'lucide-react';
-import type { TimerState } from '@/hooks/useTimer';
+import type { TimerState } from '../hooks/useTimer';
 import {
   MAX_TIMER_DURATION_SEC,
   MIN_TIMER_DURATION_SEC,
-  TIMER_DURATION_STEP_SEC,
-} from '@/config/timer';
-import { formatDuration } from '@/lib/formatDuration';
-import { formatRemaining } from '@/lib/formatRemaining';
+} from '../durationRange';
+import { formatDuration } from '../func/formatDuration';
+import { formatRemaining } from '../func/formatRemaining';
 
 // スライダー操作を書き込みにまとめるまでの待ち時間（ミリ秒）
 const SLIDER_COMMIT_DELAY_MS = 250;
+
+// スライダーの刻み幅（秒）
+const TIMER_DURATION_STEP_SEC = 60;
 
 // スライダーの目盛り（秒）。対応ブラウザでは5分刻みの印が出て、狙いを付けやすくなる
 const SLIDER_TICK_INTERVAL_SEC = 5 * 60;
