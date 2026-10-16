@@ -2,17 +2,14 @@
 
 import { useEffect, useId, useRef, useState } from 'react';
 import { AlarmClock, Pause, Play, RotateCcw, Timer as TimerIcon } from 'lucide-react';
+import type { TimerState } from '@/hooks/useTimer';
 import {
-  TimerState,
   MAX_TIMER_DURATION_SEC,
   MIN_TIMER_DURATION_SEC,
   TIMER_DURATION_STEP_SEC,
-} from '@/hooks/useTimer';
-
-import {
-  formatDuration,
-  formatRemaining,
-} from '@/lib/timer';
+} from '@/config/timer';
+import { formatDuration } from '@/lib/formatDuration';
+import { formatRemaining } from '@/lib/formatRemaining';
 
 // スライダー操作を書き込みにまとめるまでの待ち時間（ミリ秒）
 const SLIDER_COMMIT_DELAY_MS = 250;
