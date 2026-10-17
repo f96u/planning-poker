@@ -35,7 +35,7 @@ type Props = {
  * 停止中は設定時間のスライダー、計測中は進捗バーを同じ場所に出す。
  * 1行に収まらない狭い幅では、スライダー/進捗バーだけが2行目に折り返す。
  */
-export function TimerStatusRow({ timer }: Props) {
+export function TimerControls({ timer }: Props) {
   const {
     durationSec,
     remainingMs,

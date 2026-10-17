@@ -10,7 +10,7 @@ import {
 import { useAtomValue } from 'jotai';
 import { userAtom } from '@/store/auth';
 import { useRoomData } from '@/hooks/useRoomData';
-import { TimerStatusRow, TimerToggleButton, useTimer } from '@/features/timer';
+import { TimerControls, TimerToggleButton, useTimer } from '@/features/timer';
 import { PlayerCard } from './PlayerCard';
 import { BuyMeACoffeeLink } from '@/features/developer-support';
 import type { RoomStatus } from '@/types';
@@ -126,7 +126,7 @@ export function Board({ roomId }: Props) {
                 1行に収まらない狭い幅ではタイマー行だけ折り返す */}
             <div className="flex min-h-9 flex-wrap items-center justify-center gap-2 sm:gap-3 px-6 sm:px-8">
               {timer.isEnabled ? (
-                <TimerStatusRow timer={timer} />
+                <TimerControls timer={timer} />
               ) : (
                 <>
                   <span className="relative flex h-4 w-4">
