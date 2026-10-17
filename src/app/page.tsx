@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { CreateRoomButton } from './_components/CreateRoomButton';
+import { CreateRoomButton } from '@/features/room';
 import { BuyMeACoffeeLink } from './_components/BuyMeACoffeeLink';
 import { Sparkles, Zap, Users, BarChart3 } from 'lucide-react';
 
