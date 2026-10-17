@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { CreateRoomButton } from '@/features/room';
-import { BuyMeACoffeeLink } from './_components/BuyMeACoffeeLink';
+import { BuyMeACoffeeLink } from '@/features/developer-support';
 import { Sparkles, Zap, Users, BarChart3 } from 'lucide-react';
 
 export default function Home() {

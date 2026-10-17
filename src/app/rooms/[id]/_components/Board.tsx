@@ -12,7 +12,7 @@ import { userAtom } from '@/store/auth';
 import { useRoomData } from '@/hooks/useRoomData';
 import { TimerStatusRow, TimerToggleButton, useTimer } from '@/features/timer';
 import { PlayerCard } from './PlayerCard';
-import { BuyMeACoffeeLink } from '@/app/_components/BuyMeACoffeeLink';
+import { BuyMeACoffeeLink } from '@/features/developer-support';
 import type { RoomStatus } from '@/types';
 
 type Props = {
