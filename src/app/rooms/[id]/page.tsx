@@ -1,7 +1,7 @@
 import { Board } from './_components/Board';
 import { Hand } from './_components/Hand';
 import { ShareButton } from './_components/ShareButton';
-import { RoomEntry } from './_components/RoomEntry';
+import { RoomEntry } from '@/features/room';
 import { ConfettiCelebration } from './_components/ConfettiCelebration';
 import Link from 'next/link';
 import { Sparkles, Home } from 'lucide-react';
