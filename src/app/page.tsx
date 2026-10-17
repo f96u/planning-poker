@@ -1,7 +1,6 @@
-import Link from 'next/link';
 import { CreateRoomButton } from '@/features/room';
-import { BuyMeACoffeeLink } from '@/features/developer-support';
 import { Sparkles, Zap, Users, BarChart3 } from 'lucide-react';
+import { HomeFooter } from './_components/HomeFooter';
 
 export default function Home() {
   return (
@@ -74,15 +73,7 @@ export default function Home() {
             <p className="text-sm font-semibold text-gray-700">平均値表示</p>
           </div>
         </div>
-         <footer className="mt-16 py-8 text-center text-gray-500 text-sm">
-           <p>© 2025 Scrum Poker Online</p>
-          <div className="mt-2 flex items-center justify-center gap-4 flex-wrap">
-            <Link href="/terms" className="hover:underline">
-              利用規約・プライバシーポリシー
-            </Link>
-            <BuyMeACoffeeLink sourcePage="top" />
-          </div>
-      </footer>
+      <HomeFooter />
       </div>
     </div>
   );

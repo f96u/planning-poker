@@ -88,7 +88,14 @@ export function Board({ roomId }: Props) {
             開発者にコーヒーを奢る
             <span className="absolute bottom-0 right-1 translate-y-full w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-800/90"></span>
           </span>
-          <BuyMeACoffeeLink sourcePage="room" iconOnly />
+          <BuyMeACoffeeLink
+            iconOnly
+            onClick={() =>
+              logAnalyticsEvent(ANALYTICS_EVENTS.buyMeACoffeeClicked, {
+                source_page: 'room',
+              })
+            }
+          />
         </div>
       )}
       {/* 上部ステータスエリア */}

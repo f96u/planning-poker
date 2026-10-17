@@ -1,29 +1,20 @@
 'use client';
 
+import type { MouseEventHandler } from 'react';
 import { Coffee } from 'lucide-react';
-import {
-  ANALYTICS_EVENTS,
-  logAnalyticsEvent,
-} from '@/services/analytics';
 
 type Props = {
-  sourcePage: 'top' | 'room';
+  onClick: MouseEventHandler<HTMLAnchorElement>;
   iconOnly?: boolean;
 };
 
-export function BuyMeACoffeeLink({ sourcePage, iconOnly = false }: Props) {
-  const handleClick = () => {
-    logAnalyticsEvent(ANALYTICS_EVENTS.buyMeACoffeeClicked, {
-      source_page: sourcePage,
-    });
-  };
-
+export function BuyMeACoffeeLink({ onClick, iconOnly = false }: Props) {
   return iconOnly ? (
     <a
       href="https://buymeacoffee.com/f96u"
       target="_blank"
       rel="noopener noreferrer"
-      onClick={handleClick}
+      onClick={onClick}
       className="text-gray-500 hover:text-amber-600 transition-colors"
       title="Buy Me a Coffee"
     >
@@ -34,7 +25,7 @@ export function BuyMeACoffeeLink({ sourcePage, iconOnly = false }: Props) {
       href="https://buymeacoffee.com/f96u"
       target="_blank"
       rel="noopener noreferrer"
-      onClick={handleClick}
+      onClick={onClick}
       className="inline-flex items-center gap-1 text-gray-500 hover:underline"
       title="Buy Me a Coffee"
     >
