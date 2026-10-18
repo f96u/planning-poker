@@ -8,8 +8,8 @@ type Props = {
 };
 
 /**
- * ボードの右上に置く議論タイマーのON/OFFトグル。
- * ONでタイマー行が出て、OFFでルーム全員の表示から消える。
+ * useTimer が返すタイマーの状態に応じて、有効・無効を切り替える。
+ * @param timer useTimer が返すタイマーの状態と操作
  */
 export function TimerToggleButton({ timer }: Props) {
   const { isEnabled, isExpired, canControl, enable, disable } = timer;

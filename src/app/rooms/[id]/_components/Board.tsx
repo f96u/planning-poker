@@ -22,7 +22,6 @@ type Props = {
 export function Board({ roomId }: Props) {
   const user = useAtomValue(userAtom);
   const { roomData, isLoading } = useRoomData(roomId);
-  // タイマー使用中は「投票受付中...」より残り時間の方が知りたい情報なので、その位置に表示する
   const timer = useTimer(roomId);
 
   const usersList = Object.entries(roomData?.users || {});
@@ -74,7 +73,6 @@ export function Board({ roomId }: Props) {
 
   return (
     <div className="relative bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-4 sm:p-6 mb-6 sm:mb-8">
-      {/* 議論タイマーのON/OFF。補助的な機能なので右上に小さく置く */}
       {!isLoading && !revealed && (
         <div className="absolute top-2 right-2 sm:top-3 sm:right-3 z-10">
           <TimerToggleButton timer={timer} />

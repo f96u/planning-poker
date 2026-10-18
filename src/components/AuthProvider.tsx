@@ -12,11 +12,6 @@ let isInitialized = false;
 let unsubscribe: (() => void) | null = null;
 let isLoggingIn = false;
 
-/**
- * 認証状態を監視し、atomを更新するコンポーネント
- * アプリケーション全体で1回だけ実行されるようにするため、
- * このコンポーネントをlayout.tsxに配置する
- */
 export function AuthProvider() {
   const setUser = useSetAtom(userAtom);
   const setLoading = useSetAtom(authLoadingAtom);
