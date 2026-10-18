@@ -6,7 +6,6 @@ export default function NotFound() {
     <div className="min-h-screen bg-linear-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center p-4">
       <div className="max-w-md w-full text-center">
         <div className="bg-white rounded-2xl shadow-2xl p-8 sm:p-12">
-          {/* アイコン・タイトル */}
           <div className="mb-8">
             <div className="inline-flex items-center justify-center w-20 h-20 bg-indigo-100 rounded-full mb-6">
               <Sparkles className="w-10 h-10 text-indigo-600" />
@@ -20,7 +19,6 @@ export default function NotFound() {
             </p>
           </div>
 
-          {/* ボタン */}
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
               href="/"

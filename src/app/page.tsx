@@ -6,9 +6,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-linear-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center p-4">
       <div className="max-w-2xl w-full">
-        {/* メインコンテンツ */}
         <div className="bg-white rounded-2xl shadow-2xl p-8 sm:p-12 text-center">
-          {/* アイコン・タイトル */}
           <div className="mb-8">
             <div className="inline-flex items-center justify-center w-20 h-20 bg-indigo-100 rounded-full mb-6">
               <Sparkles className="w-10 h-10 text-indigo-600" />
@@ -21,7 +19,6 @@ export default function Home() {
             </p>
           </div>
 
-          {/* 説明 */}
           <div className="mb-10 text-left bg-gray-50 rounded-xl p-6 space-y-4">
             <h2 className="font-bold text-gray-700 text-lg mb-4 flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-indigo-500" />
@@ -47,10 +44,8 @@ export default function Home() {
             </div>
           </div>
 
-          {/* 作成ボタン */}
           <CreateRoomButton />
 
-          {/* フッター情報 */}
           <div className="mt-10 pt-6 border-t border-gray-200">
             <p className="text-sm text-gray-400">
               Scrum Poker は、チームの見積もりを効率化するためのツールです
@@ -58,7 +53,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* 特徴 */}
         <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 text-center shadow-md">
             <Zap className="mx-auto mb-2 h-7 w-7 text-indigo-500" />
