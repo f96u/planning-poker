@@ -4,7 +4,7 @@ import { useAtomValue } from 'jotai';
 import { db } from '@/lib/firebase';
 import { userAtom } from '@/store/auth';
 import { useRoomData } from '@/features/room';
-import { useServerTimeOffset } from '@/hooks/useServerTimeOffset';
+import { useServerTimeOffset } from './useServerTimeOffset';
 import { formatRemaining } from '../func/formatRemaining';
 import type { Timer } from '@/types';
 import {
