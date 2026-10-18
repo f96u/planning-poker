@@ -5,7 +5,7 @@ import { ref, update } from 'firebase/database';
 import { useAtomValue } from 'jotai';
 import { db } from '@/lib/firebase';
 import { userAtom } from '@/store/auth';
-import { useRoomData } from '@/hooks/useRoomData';
+import { useRoomData } from '@/features/room';
 
 // フィボナッチ数列のカード
 const CARDS = [1, 2, 3, 5, 8, 13, 21, '?'];

@@ -3,7 +3,7 @@ import { ref, set, remove } from 'firebase/database';
 import { useAtomValue } from 'jotai';
 import { db } from '@/lib/firebase';
 import { userAtom } from '@/store/auth';
-import { useRoomData } from '@/hooks/useRoomData';
+import { useRoomData } from '@/features/room';
 import { useServerTimeOffset } from '@/hooks/useServerTimeOffset';
 import { formatRemaining } from '../func/formatRemaining';
 import type { Timer } from '@/types';
