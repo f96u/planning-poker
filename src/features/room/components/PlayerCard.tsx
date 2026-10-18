@@ -1,7 +1,7 @@
 'use client';
 
 import { X } from 'lucide-react';
-import { User } from '@/types';
+import type { User } from '@/types';
 
 type Props = {
   uid: string;

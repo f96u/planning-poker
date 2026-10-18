@@ -9,7 +9,7 @@ import {
 } from '@/services/analytics';
 import { useAtomValue } from 'jotai';
 import { userAtom } from '@/store/auth';
-import { useRoomData } from '@/features/room';
+import { useRoomData } from '../hooks/useRoomData';
 import { TimerControls, TimerToggleButton, useTimer } from '@/features/timer';
 import { PlayerCard } from './PlayerCard';
 import { BuyMeACoffeeLink } from '@/features/developer-support';

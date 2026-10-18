@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Confetti from 'react-confetti';
-import { useRoomData } from '@/features/room';
+import { useRoomData } from '../hooks/useRoomData';
 
 type Props = {
   roomId: string;

@@ -1,8 +1,10 @@
-import { Board } from './_components/Board';
-import { Hand } from './_components/Hand';
-import { ShareButton } from './_components/ShareButton';
-import { RoomEntry } from '@/features/room';
-import { ConfettiCelebration } from './_components/ConfettiCelebration';
+import {
+  Board,
+  ConfettiCelebration,
+  Hand,
+  RoomEntry,
+  ShareButton,
+} from '@/features/room';
 import Link from 'next/link';
 import { Sparkles, Home } from 'lucide-react';
 import { Metadata } from 'next';
@@ -79,5 +81,4 @@ export default async function RoomPage({ params }: Props) {
     </div>
   );
 }
-
 
