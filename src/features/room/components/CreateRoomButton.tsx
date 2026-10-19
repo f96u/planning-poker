@@ -53,7 +53,7 @@ export function CreateRoomButton() {
         transition-all duration-200 transform hover:scale-105 active:scale-95
         disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
         flex items-center justify-center gap-3 mx-auto
-        min-h-[56px]
+        min-h-14
       `}
     >
       {loading ? (
