@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { ref, set, remove } from 'firebase/database';
 import { useAtomValue } from 'jotai';
 import { db } from '@/lib/firebase';
-import { userAtom } from '@/store/auth';
+import { userAtom } from '@/features/auth';
 import { useRoomData } from '@/features/room';
 import { useServerTimeOffset } from './useServerTimeOffset';
 import { formatRemaining } from '../func/formatRemaining';

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { ref, update } from 'firebase/database';
 import { useAtomValue } from 'jotai';
 import { db } from '@/lib/firebase';
-import { userAtom } from '@/store/auth';
+import { userAtom } from '@/features/auth';
 import { useRoomData } from '../hooks/useRoomData';
 
 // フィボナッチ数列のカード
@@ -163,4 +163,3 @@ export function Hand({ roomId }: Props) {
     </>
   );
 }
-

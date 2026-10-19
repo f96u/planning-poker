@@ -10,7 +10,7 @@ import {
   ANALYTICS_EVENTS,
   logAnalyticsEvent,
 } from '@/services/analytics';
-import { userAtom, authLoadingAtom } from '@/store/auth';
+import { userAtom, authLoadingAtom } from '@/features/auth';
 import type { RoomStatus } from '@/types';
 
 export function CreateRoomButton() {

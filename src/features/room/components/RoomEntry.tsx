@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { ref, update, onDisconnect } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { useAtomValue } from 'jotai';
-import { userAtom } from '@/store/auth';
+import { userAtom } from '@/features/auth';
 
 type Props = {
   roomId: string;

@@ -5,7 +5,7 @@ import { ref, onValue } from 'firebase/database';
 import { useAtomValue } from 'jotai';
 import { db } from '@/lib/firebase';
 import { Room } from '@/types';
-import { userAtom, authLoadingAtom } from '@/store/auth';
+import { userAtom, authLoadingAtom } from '@/features/auth';
 
 export function useRoomData(roomId: string) {
   const [roomData, setRoomData] = useState<Room | null>(null);

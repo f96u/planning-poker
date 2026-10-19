@@ -8,7 +8,7 @@ import {
   logAnalyticsEvent,
 } from '@/services/analytics';
 import { useAtomValue } from 'jotai';
-import { userAtom } from '@/store/auth';
+import { userAtom } from '@/features/auth';
 import { useRoomData } from '../hooks/useRoomData';
 import { TimerControls, TimerToggleButton, useTimer } from '@/features/timer';
 import { PlayerCard } from './PlayerCard';

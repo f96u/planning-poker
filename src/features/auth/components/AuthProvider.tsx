@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { onAuthStateChanged, signInAnonymously } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { useSetAtom } from 'jotai';
-import { userAtom, authLoadingAtom } from '@/store/auth';
+import { userAtom, authLoadingAtom } from '../store/auth';
 
 // モジュールレベルの変数で初期化状態を管理
 // これにより、複数のインスタンスがマウントされても1回だけ実行される
@@ -56,4 +56,3 @@ export function AuthProvider() {
 
   return null;
 }
-
