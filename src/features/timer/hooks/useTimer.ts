@@ -21,21 +21,29 @@ const TICK_INTERVAL_MS = 250;
 // 未設定のルームで初期表示する時間（秒）
 const DEFAULT_TIMER_DURATION_SEC = 5 * 60;
 
-function getDurationSec(timer?: Timer): number {
-  const durationSec = timer?.durationSec;
+/**
+ * 秒単位のタイマー時間を、未設定時の既定値または許容範囲内の値に正規化する。
+ */
+function normalizeDurationSec(durationSec: number | undefined): number {
   if (typeof durationSec !== 'number' || durationSec <= 0) return DEFAULT_TIMER_DURATION_SEC;
   return Math.min(Math.max(durationSec, MIN_TIMER_DURATION_SEC), MAX_TIMER_DURATION_SEC);
 }
 
 function getRemainingMs(timer: Timer | undefined, now: number): number {
-  const fullMs = getDurationSec(timer) * 1000;
+  const fullMs = normalizeDurationSec(timer?.durationSec) * 1000;
   if (!timer) return fullMs;
-  if (timer.running && typeof timer.endsAt === 'number') return timer.endsAt - now;
+  if (timer.running && typeof timer.endsAt === 'number') {
+    const remainingMs = timer.endsAt - now;
+    // 開始時の残り時間を上限にし、時刻同期のずれで表示が増えるのを防ぐ。
+    return typeof timer.remainingMs === 'number'
+      ? Math.min(remainingMs, timer.remainingMs)
+      : remainingMs;
+  }
   return typeof timer.remainingMs === 'number' ? timer.remainingMs : fullMs;
 }
 
 function createResetTimer(durationSec: number): Timer {
-  const sec = getDurationSec({ durationSec, remainingMs: 0, running: false });
+  const sec = normalizeDurationSec(durationSec);
   return {
     durationSec: sec,
     endsAt: null,
@@ -70,7 +78,7 @@ export function useTimer(roomId: string) {
     return () => clearInterval(intervalId);
   }, [hasTimer, offset]);
 
-  const durationSec = getDurationSec(timer);
+  const durationSec = normalizeDurationSec(timer?.durationSec);
   const remainingMs = getRemainingMs(timer, now);
   const isExpired = running && remainingMs <= 0;
   const isWarning = running && !isExpired && remainingMs <= WARNING_THRESHOLD_MS;
